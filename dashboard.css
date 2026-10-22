@@ -256,3 +256,11 @@ html[data-ari-crd=v1]:has(#conversations-layout),html[data-ari-crd=v1]:has(#conv
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout{height:calc(100dvh - var(--ari-ph-top,130px) - 10px)!important;max-height:calc(100dvh - var(--ari-ph-top,130px) - 10px)!important;padding:0 6px!important;margin:0 0 10px!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list{border:1px solid #eadfcb!important;border-radius:0 0 18px 18px!important;overscroll-behavior:contain!important}
 }
+
+/* v3.23 phone: banner fits content width, even 6px margins, aligned with list box */
+@media (width<=480px){
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner{width:calc(100% - 12px)!important;max-width:calc(100% - 12px)!important;margin:6px 6px 6px!important;height:96px!important;min-height:96px!important;padding:14px 18px 16px!important;border-radius:18px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:center!important;overflow:hidden!important;position:relative!important;flex:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner .ari-crd-eyebrow{margin-bottom:6px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner .ari-crd-title{font-size:28px!important;padding:2px 0 16px!important;line-height:1.05!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list{border-radius:18px!important}
+}
