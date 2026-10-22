@@ -215,3 +215,6 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] .truncate:not
 @media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-layout{height:calc(100% - var(--ari-crd-bh,84px))!important;max-height:calc(100% - var(--ari-crd-bh,84px))!important;min-height:0!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-central-panel-viewer{min-width:480px!important}}
 @media (min-width:1280px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 420px!important;width:420px!important;max-width:420px!important}}
+/* crd16: v20 - banner never scrolled out of view; layout height measured exactly in JS */
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-layout{height:var(--ari-crd-lh,calc(100% - var(--ari-crd-bh,84px)))!important;max-height:var(--ari-crd-lh,calc(100% - var(--ari-crd-bh,84px)))!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #ari-crd-banner{flex:none!important;height:84px!important;min-height:84px!important}}
