@@ -1965,6 +1965,13 @@ function watch(){if(!d.body)return w.setTimeout(watch,50);obs=new w.MutationObse
    if(recs[i].type==='attributes'){if(t.closest('#'+LAY+',header.hl_header')){seen.delete(t);seenB.delete(t);var dd=t.querySelectorAll('*');for(var j=0;j<dd.length&&j<200;j++){seen.delete(dd[j]);seenB.delete(dd[j]);}queue();}continue;}
    if(t.closest('#'+LAY+',header.hl_header')||(t.querySelector&&t.querySelector('#'+LAY))){queue();return;}}});
  obs.observe(d.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','aria-selected','aria-current','data-ari-show-list','data-ari-list-focus','data-ari-hide-thread','data-ari-conv-open','hidden']});}
+/* v21: tag new list rows before paint; hide untagged ones at most 300ms */
+var holdT=null;function hold(){var h=d.documentElement;if(!h.hasAttribute('data-ari-list-hold'))h.setAttribute('data-ari-list-hold','1');if(holdT)w.clearTimeout(holdT);holdT=w.setTimeout(function(){holdT=null;h.removeAttribute('data-ari-list-hold');},300);}
+function fastList(){if(!d.body)return w.setTimeout(fastList,50);var lo=new w.MutationObserver(function(recs){if(stopped||!on())return;var list=d.getElementById(LIST);if(!list)return;var hit=false;for(var i=0;i<recs.length;i++){if(recs[i].addedNodes.length&&list.contains(recs[i].target)){hit=true;break;}}if(!hit)return;hold();try{header(list);rows(list);}catch(e){}
+ if(!list.querySelector('a[href*="/conversations/conversations/"]:not([data-ari-conv-row]):not([data-ari-conv-row] *),[data-conversation-id]:not([data-ari-conv-row]):not([data-ari-conv-row] *)')){if(holdT){w.clearTimeout(holdT);holdT=null;}d.documentElement.removeAttribute('data-ari-list-hold');}});lo.observe(d.body,{childList:true,subtree:true});}
+fastList();
+/* v21: New message button gets a label */
+w.setInterval(function(){var b=d.querySelectorAll('[data-ari-msg-new],button[data-ari-new-message]');for(var i=0;i<b.length;i++){if(b[i].getAttribute('title')!=='New message')b[i].setAttribute('title','New message');if(b[i].getAttribute('aria-label')!=='New message')b[i].setAttribute('aria-label','New message');}},700);
 watch();sync();})(window);
 
 }catch(e){console.warn("ari block 42",e)}
