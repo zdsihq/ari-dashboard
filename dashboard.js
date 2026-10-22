@@ -2888,8 +2888,18 @@ function loc(){var m=location.pathname.match(/\/location\/([^\/]+)\//);return m?
 function onChats(){return /\/conversations\/conversations/.test(location.pathname);}
 function contactId(){var a=d.querySelector('a[href*="/contacts/detail/"]');if(!a)return '';var m=a.getAttribute('href').match(/contacts\/detail\/([A-Za-z0-9]+)/);return m?m[1]:'';}
 function hasTag(){return [].some.call(d.querySelectorAll('.tag, .n-tag, [class*="tag"]'),function(e){return /psychic-took-over/.test(e.textContent||'');});}
-function call(action,cid,cb){
- fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contact_id:cid,location_id:loc(),action:action})})
+function notes(){try{var cp=d.querySelector('#conversations-content');if(!cp)return '';
+ var it=[].slice.call(cp.querySelectorAll('.message-item')),st0=0,i,out=[];
+ for(i=0;i<it.length;i++){if(/has joined the chat/i.test(it[i].textContent||''))st0=i+1;}
+ for(i=st0;i<it.length;i++){var e=it[i],b=e.querySelector('.chat-message');if(!b)continue;
+  var you=e.querySelector('[data-ari-who="you"]')||(!e.querySelector('[data-ari-who="ari"],[class*="bg-[#EBE9FE]"],[class*="text-[#6938EF]"]')&&e.querySelector('.hr-avatar,.hr-avatar__container'));if(!you)continue;
+  var t=(b.innerText||b.textContent||'').replace(/\s+$/,'').split('\n');
+  if(t.length&&/^[^\s]{1,40}\u2728$/.test(t[t.length-1].trim()))t.pop();
+  t=t.join(' ').replace(/\s+/g,' ').trim();if(t&&!/has joined the chat/i.test(t))out.push(t);}
+ var s=out.join(' | ');return s.length>800?s.slice(-800):s;}catch(x){return '';}}
+function call(action,cid,cb){var body={contact_id:cid,location_id:loc(),action:action};
+ if(action==='handback'){try{body.notes=notes();}catch(x){body.notes='';}}
+ fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
  .then(function(r){cb(r.ok);}).catch(function(){cb(false);});}
 function render(){
  if(!onChats()){var o=d.getElementById('ari-join');if(o)o.remove();return;}
