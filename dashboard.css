@@ -249,3 +249,10 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-card] div:has(>div>
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list .conv-item:not([style*="transform"]):not([style*="top:"]){height:auto!important;min-height:62px!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) body[data-ari-show-list] #ari-join{display:none!important}
 }
+
+/* v3.22 phone: page never scrolls, list scrolls inside, rounded bottom */
+@media (width<=480px){
+html[data-ari-crd=v1]:has(#conversations-layout),html[data-ari-crd=v1]:has(#conversations-layout) body{overflow:hidden!important;overscroll-behavior:none!important;height:100dvh!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout{height:calc(100dvh - var(--ari-ph-top,130px) - 10px)!important;max-height:calc(100dvh - var(--ari-ph-top,130px) - 10px)!important;padding:0 6px!important;margin:0 0 10px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list{border:1px solid #eadfcb!important;border-radius:0 0 18px 18px!important;overscroll-behavior:contain!important}
+}
