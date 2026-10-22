@@ -225,3 +225,6 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :is([data-ari-msg-new],button[data-a
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) body{padding-right:0!important}
 @media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{margin-bottom:0!important}}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html)[data-ari-list-hold] #conversations-list :is(a[href*="/conversations/conversations/"],[data-conversation-id]):not([data-ari-conv-row]):not([data-ari-conv-row] *){opacity:0!important}
+/* crd18: v22 - gold ring on New message, right column fits (my-2 top margin) */
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :is([data-ari-msg-new],button[data-ari-new-message]){background:var(--k-active)!important;box-shadow:0 0 0 2px var(--k-gold),0 6px 16px #1b5e3b47!important}
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{margin-top:8px!important;margin-bottom:0!important;box-sizing:border-box!important;height:calc(100% - 8px)!important;max-height:calc(100% - 8px)!important}}
