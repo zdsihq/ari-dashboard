@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.34: colors, fonts, corners only. No layout rules. */
+/* Ari phone-lite v3.35: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap");
 :root{--ari-green:#1b5e3b;--ari-green-deep:#174a31;--ari-gold:#c9a227;--ari-gold-soft:#e9d08f;--ari-cream:#fbf7ee;--ari-ink:#233f33}
 body,body button,body input,body textarea,body select{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
@@ -16,3 +16,19 @@ body input,body textarea,body select,body [contenteditable]{font-size:16px!impor
 .hr-button--primary-type,.n-button--primary-type,button[type=submit]{background-color:var(--ari-green)!important;border-color:var(--ari-green)!important;color:#fff!important;border-radius:999px}
 .conversation-list-header button[aria-current=true]{color:var(--ari-green)!important;border-color:var(--ari-gold)!important}
 a{color:var(--ari-green)}
+/* v3.35 one pane at a time on Ari Chats (body attrs set by phone-lite.js) */
+body[data-arl-chat] .sidebar-v2-location>section.w-full{flex:1;min-width:0}
+body[data-arl-chat] .sidebar-v2-location>section.w-full>section.hl_wrapper:has(#conversations-layout){width:100%!important;min-width:0!important;max-width:100%!important}
+body[data-arl-chat] #conversations-layout{min-width:0!important;max-width:100vw!important;overflow-x:clip!important}
+body[data-arl-chat] #conversations-layout :is(#conversations-list,#conversations-central-panel-viewer){min-width:0!important;max-width:100%!important}
+body[data-arl-chat] #conversations-list .conversation-list-header,body[data-arl-chat] #conversations-list .conversation-list-header .flex{flex-wrap:wrap!important;min-width:0!important;max-width:100%!important}
+body[data-arl-chat] #conversations-list .conversation-list-header .flex-shrink-0{flex-shrink:1!important;min-width:0!important}
+body[data-arl-chat]:not([data-arl-info]) #conversations-right-column{display:none!important}
+body[data-arl-chat]:not([data-arl-open]) #conversations-central-panel-viewer,body[data-arl-open]:not([data-arl-list]) #conversations-list,body[data-arl-open][data-arl-list] #conversations-central-panel-viewer{display:none!important}
+body[data-arl-chat]:not([data-arl-open]) #conversations-list,body[data-arl-open]:not([data-arl-list]) #conversations-central-panel-viewer,body[data-arl-open][data-arl-list] #conversations-list{flex:100%!important;width:100%!important;min-width:0!important;max-width:100%!important}
+body[data-arl-info] #conversations-layout :is(#conversations-central-panel-viewer,#conversations-list),body[data-arl-info] #conversations-layout #conversations-panel:not(:has(#conversations-right-column)){display:none!important}
+body[data-arl-info] #conversations-layout :is(#conversations-right-column,:has(>#conversations-right-column)){display:flex!important;flex:auto!important;width:100%!important;min-width:0!important;max-width:none!important}
+body[data-arl-chat] :is(#conversations-central-panel-viewer,#conversations-right-column,#conversations-list){position:relative}
+#ari-lite-bar{position:absolute;top:6px;right:6px;z-index:6;display:flex;gap:6px;font-family:Jost,"Helvetica Neue",Arial,sans-serif}
+#ari-lite-bar button{font-size:13px;line-height:1;padding:7px 11px;border-radius:999px;border:1px solid var(--ari-gold);background:var(--ari-cream);color:var(--ari-green);font-weight:600;box-shadow:0 1px 4px #173e3022}
+body:not([data-arl-open]) #ari-lite-bar{display:none}

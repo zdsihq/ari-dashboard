@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.34: All tab once, Join/Hand back (chat page only), Lilah signature */
+/* Ari phone-lite v3.35: one-pane chat layout, All tab once, Join/Hand back (chat page only), Lilah signature */
 try{!function(w,d){if(w.__ariLite)return;w.__ariLite=1;
 function onChat(){return/\/conversations\/conversations/.test(location.pathname)}
 /* opens on All, once per load, stops on user tap */
@@ -10,10 +10,19 @@ function cid(){var t=d.querySelector('#conversations-layout a[href*="/contacts/d
 function took(){return[].some.call(d.querySelectorAll('#conversations-layout .tag,#conversations-layout .n-tag,#conversations-layout [class*="tag"]'),function(t){return/psychic-took-over/.test(t.textContent||"")})}
 function notes(){try{var t=d.querySelector("#conversations-content");if(!t)return"";var n=[].slice.call(t.querySelectorAll(".message-item")),r=0,o=[],a;for(a=0;a<n.length;a++)/has joined the chat/i.test(n[a].textContent||"")&&(r=a+1);for(a=r;a<n.length;a++){var m=n[a],l=m.querySelector(".chat-message");if(l&&m.querySelector(".chat-bubble-outbound")){var s=(l.innerText||l.textContent||"").replace(/\s+$/,"").split("\n");s.length&&/^[^\s]{1,40}\u2728$/.test(s[s.length-1].trim())&&s.pop();s=s.join(" ").replace(/\s+/g," ").trim();s&&!/has joined the chat/i.test(s)&&o.push(s)}}var c=o.join(" | ");return c.length>800?c.slice(-800):c}catch(x){return""}}
 function post(act,c,cb){var m=location.pathname.match(/\/location\/([^\/]+)\//),b={contact_id:c,location_id:m?m[1]:"",action:act};if(act==="handback")b.notes=notes();fetch("https://services.leadconnectorhq.com/hooks/8otTGBxdVFDsQ1gNhDg0/webhook-trigger/e246fb28-08ce-4aa4-b165-0cbc23ba9da5",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){cb(r.ok)}).catch(function(){cb(!1)})}
-function render(){try{all();var j=d.getElementById("ari-join");if(!onChat()){j&&j.remove();return}var c=cid();if(!c){j&&j.remove();return}var comp=d.getElementById("composer-textarea");if(!j){j=d.createElement("div");j.id="ari-join"}if(comp&&comp.parentNode){if(comp.previousElementSibling!==j)comp.parentNode.insertBefore(j,comp)}else if(!j.parentNode)d.body.appendChild(j);
+function render(){try{all();lay();var j=d.getElementById("ari-join");if(!onChat()){j&&j.remove();return}var c=cid();if(!c){j&&j.remove();return}var comp=d.getElementById("composer-textarea");if(!j){j=d.createElement("div");j.id="ari-join"}if(comp&&comp.parentNode){if(comp.previousElementSibling!==j)comp.parentNode.insertBefore(j,comp)}else if(!j.parentNode)d.body.appendChild(j);
 var p=st[c]==="on"||st[c]!=="off"&&took();if(j.dataset.cid===c&&j.dataset.p===String(p))return;j.dataset.cid=c;j.dataset.p=String(p);
 j.innerHTML=p?'<span class="ari-join-note">Ari paused for this client</span> <button type="button" class="ari-join-btn ari-join-back">Hand back to Ari</button>':'<button type="button" class="ari-join-btn">Join chat</button>';
 j.querySelector("button").onclick=function(){var b=this;b.disabled=!0;b.textContent="One moment...";post(p?"handback":"join",c,function(ok){b.disabled=!1;ok?st[c]=p?"off":"on":alert("That did not go through. Please try again.");j.dataset.p="";render()})}}catch(x){}}
+/* v3.35 one pane at a time: list OR chat OR details, plus All chats / Details pills */
+var lp=null,showList=0,info=0;
+function tog(b,n,on){on?b.setAttribute(n,""):b.removeAttribute(n)}
+function lay(){try{var b=d.body;if(!b)return;var on=onChat(),id=on&&location.pathname.replace(/^.*\/conversations\/conversations\/?/,"").replace(/\/.*$/,"");if(id!==lp){lp=id;showList=0;info=0}
+tog(b,"data-arl-chat",on);tog(b,"data-arl-open",!!id);tog(b,"data-arl-list",!!id&&showList);tog(b,"data-arl-info",!!id&&info);
+var bar=d.getElementById("ari-lite-bar");if(!on||!id){bar&&bar.remove();return}
+var host=d.getElementById(info?"conversations-right-column":showList?"conversations-list":"conversations-central-panel-viewer");if(!host)return;
+if(!bar){bar=d.createElement("div");bar.id="ari-lite-bar";bar.innerHTML='<button type="button" data-k="l"></button><button type="button" data-k="i"></button>';bar.onclick=function(e){var k=e.target&&e.target.getAttribute("data-k");if(k==="l"){showList=!(showList||info);info=0}else if(k==="i"){info=!info;showList=0}else return;lay()}}
+if(bar.parentNode!==host)host.appendChild(bar);var t1=showList||info?"Back to chat":"All chats",t2="Details",bs=bar.children;if(bs[0].textContent!==t1)bs[0].textContent=t1;if(bs[1].textContent!==t2)bs[1].textContent=t2;bs[1].hidden=!!(showList||info)}catch(x){}}
 function q(){if(pend)return;pend=1;setTimeout(function(){pend=0;render()},250)}
 /* page-scoped: watch only #conversations-layout while on the chat page */
 var path="";function route(){try{if(location.pathname===path&&(!onChat()||mo&&d.getElementById("conversations-layout")===mo.__el))return;path=location.pathname;if(mo){mo.disconnect();mo=null}var el=onChat()&&d.getElementById("conversations-layout");if(el){mo=new MutationObserver(q);mo.__el=el;mo.observe(el,{childList:!0,subtree:!0})}render()}catch(x){}}
