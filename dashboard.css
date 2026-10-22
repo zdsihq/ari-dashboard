@@ -131,3 +131,9 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] :is(h1,h2,h3,
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] :is(h1,h2,h3,h4,[class*=name],[class*=title],.truncate):not(button):not(button *){-webkit-text-fill-color:#f4efe3!important;color:#f4efe3!important}
 @media (max-width:767px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .conversation-panel{padding-bottom:72px!important;overflow-x:hidden!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .conversation-panel .chat-outbound-hidden{max-width:100%!important}}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list .conversation-list-container [class*=ml-\[12px\]]{margin-left:10px!important}
+
+/* crd8: v10 live fixes */
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #ari-crd-banner{width:calc(100% + var(--ari-crd-bgap,0px))!important;max-width:calc(100% + var(--ari-crd-bgap,0px))!important;margin-right:calc(0px - var(--ari-crd-bgap,0px))!important}}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list [data-conversation-id] .font-bold{white-space:normal!important;overflow:hidden!important;text-overflow:clip!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow-wrap:anywhere;line-height:1.25!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list [data-conversation-id] [class*=min-w-\[40px\]]{min-width:0!important;margin-left:4px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list [data-conversation-id] .items-start.justify-between{gap:4px!important}

@@ -2994,7 +2994,14 @@ function sync(){frame=null;if(stopped)return;if(!on()){if(d.documentElement.hasA
   if(nm){var box=nm.parentElement;if(av){while(box&&box!==col&&!box.contains(av))box=box.parentElement;}if(box&&box!==col&&!box.hasAttribute('data-ari-crd-name')){var o=col.querySelector('[data-ari-crd-name]');if(o)o.removeAttribute('data-ari-crd-name');box.setAttribute('data-ari-crd-name','1');}
    if(box&&box!==col&&!box.querySelector('.ari-crd-spark')){var sp=d.createElement('span');sp.className='ari-crd-spark';sp.setAttribute('aria-hidden','true');sp.textContent='\u2726';box.appendChild(sp);}}}
  /* Join chat sits above the message input, never over it */
- var cb=d.querySelector('#conversations-central-panel-viewer [data-ari-composer-bar]');if(cb){var r=cb.getBoundingClientRect();if(r.height>0){var v=Math.max(16,Math.round(w.innerHeight-r.top+12))+'px';if(h.style.getPropertyValue('--ari-crd-join-b')!==v)h.style.setProperty('--ari-crd-join-b',v);}}}
+ var cb=d.querySelector('#conversations-central-panel-viewer [data-ari-composer-bar]');if(cb){var r=cb.getBoundingClientRect();if(r.height>0){var v=Math.max(16,Math.round(w.innerHeight-r.top+12))+'px';if(h.style.getPropertyValue('--ari-crd-join-b')!==v)h.style.setProperty('--ari-crd-join-b',v);}}
+ /* banner reaches the right edge on desktop */
+ b=d.getElementById(BID);if(b&&b.parentElement){var pr=b.parentElement.getBoundingClientRect(),g=w.innerWidth>767?Math.max(0,Math.min(80,Math.round(d.documentElement.clientWidth-pr.right))):0,gv=g+'px';if(h.style.getPropertyValue('--ari-crd-bgap')!==gv)h.style.setProperty('--ari-crd-bgap',gv);}
+ /* phone: open each chat at the bottom, and stay there if already at the bottom */
+ if(w.innerWidth<=767){var cp=d.querySelector('#conversations-central-panel-viewer .conversation-panel')||d.querySelector('.conversation-panel');if(cp){var key=w.location.pathname;
+  if(!cp.__ariB){cp.__ariB=1;cp.__ariAt=true;cp.addEventListener('scroll',function(){cp.__ariAt=cp.scrollHeight-cp.scrollTop-cp.clientHeight<60;},{passive:true});}
+  if(cp.__ariKey!==key){cp.__ariKey=key;cp.__ariAt=true;cp.__ariT=Date.now();}
+  if((cp.__ariAt||Date.now()-cp.__ariT<2500)&&cp.scrollHeight-cp.scrollTop-cp.clientHeight>2){cp.scrollTop=cp.scrollHeight;cp.__ariAt=true;}}}}
 function queue(){if(frame===null&&!stopped)frame=w.setTimeout(function(){w.requestAnimationFrame(sync);},200);}
 function watch(){if(!d.body)return w.setTimeout(watch,50);obs=new w.MutationObserver(function(){if(on()||d.documentElement.hasAttribute(A))queue();});obs.observe(d.body,{childList:true,subtree:true});}
 w.addEventListener('resize',queue);w.addEventListener('popstate',queue);timer=w.setInterval(queue,1500);watch();sync();
