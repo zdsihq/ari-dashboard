@@ -202,3 +202,12 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-form
 /* crd12b: JS-tagged cards (data-ari-crd=ari-card / ari-name) */
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-card]{background:#faf3e3!important;background-color:#faf3e3!important;width:100%!important;max-width:none!important;box-sizing:border-box!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-name]{color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;font-weight:600!important;opacity:1!important;text-align:center!important}
+/* crd13: v17 - name clip, all white strips, header name, 360px column */
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-name]{line-height:1.35!important;overflow:visible!important;padding-bottom:2px!important;height:auto!important;max-height:none!important;text-overflow:clip!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column p.hr-text-semibold.text-gray-900{overflow:visible!important;height:auto!important;max-height:none!important;line-height:1.35!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .gap-2.min-w-0.flex-1.overflow-hidden{overflow:visible!important;height:auto!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .w-full.min-w-0.justify-between.gap-2{overflow:visible!important;height:auto!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-field]{background:#fffbf2!important;background-color:#fffbf2!important}
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 360px!important;width:360px!important;max-width:360px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] [data-ari-thread-name]:not(button):not(button *),[data-ari-thread-head] [data-ari-thread-name] *:not(button):not(button *){color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;opacity:1!important;font-weight:600!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] .truncate:not(button):not(button *){color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;opacity:1!important}}
