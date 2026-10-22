@@ -271,3 +271,13 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewe
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(.central-panel,#conversation-view-wrapper,[data-ari-crd-card]){border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;background:transparent!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(.conversation-panel,#conversations-content){flex:1 1 auto!important;min-height:0!important}
 }
+
+/* v3.25 phone: one box edge, same width as banner, 8px gap below banner */
+@media (width<=480px){
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout{border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;outline:0!important;margin:0!important;padding-top:0!important;padding-bottom:0!important;box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout::before,html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout::after{display:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner{margin:6px 6px 8px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) :is(#conversations-list,#conversations-central-panel-viewer){width:100%!important;max-width:100%!important;margin:0!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) :is(#conversations-list,#conversations-central-panel-viewer,#conversations-right-column){box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(#conversations-content,.conversation-panel,#conversations-content>div){border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;background:transparent!important;margin-left:0!important;margin-right:0!important}
+}

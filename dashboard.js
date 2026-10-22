@@ -1,5 +1,5 @@
 /* v3.24 phone: size the chat box and its GHL ancestors to the visible viewport */
-!function(w,d){if(w.__ariFit)return;w.__ariFit=1;var T=[],q=0,P=["height","max-height","min-height","overflow","border","border-radius","box-shadow","margin-bottom","padding-bottom","flex"];
+!function(w,d){if(w.__ariFit)return;w.__ariFit=1;var T=[],q=0,P=["background","outline","padding-left","padding-right","padding-top","height","max-height","min-height","overflow","border","border-radius","box-shadow","margin-bottom","padding-bottom","flex"];
 function ph(){return w.matchMedia("(max-width:480px)").matches}
 function set(e,k,v){e.__ariFitOld||(e.__ariFitOld={},T.push(e));k in e.__ariFitOld||(e.__ariFitOld[k]=[e.style.getPropertyValue(k),e.style.getPropertyPriority(k)]);e.style.setProperty(k,v,"important")}
 function undo(){T.forEach(function(e){var o=e.__ariFitOld;for(var k in o)o[k][0]?e.style.setProperty(k,o[k][0],o[k][1]):e.style.removeProperty(k);e.__ariFitOld=null});T=[]}
@@ -7,7 +7,7 @@ function fit(){q=0;var L=d.getElementById("conversations-layout");if(!L||!ph()){
 for(var c=L.parentElement;c;c=c.parentElement)c.scrollTop>0&&(c.scrollTop=0);w.scrollY>0&&w.scrollTo(0,0);
 var vv=w.visualViewport,vh=Math.round(vv?vv.height:w.innerHeight),gap=8;
 var top=L.getBoundingClientRect().top,h=Math.max(240,Math.round(vh-top-gap));
-set(L,"height",h+"px");set(L,"max-height",h+"px");set(L,"min-height","0");set(L,"flex","none");
+["border","border-radius","box-shadow","background","outline"].forEach(function(k){set(L,k,k=="border-radius"?"0":k=="box-shadow"?"none":k=="background"?"transparent":"0")});var B=d.getElementById("ari-crd-banner");if(B&&B.offsetWidth){var br=B.getBoundingClientRect(),lr=L.getBoundingClientRect();set(L,"padding-left",Math.max(0,Math.round(br.left-lr.left))+"px");set(L,"padding-right",Math.max(0,Math.round(lr.right-br.right))+"px");set(L,"padding-top","0");set(L,"padding-bottom","0");top=L.getBoundingClientRect().top;h=Math.max(240,Math.round(vh-top-gap))}set(L,"height",h+"px");set(L,"max-height",h+"px");set(L,"min-height","0");set(L,"flex","none");
 /* ancestors: never shorter than what the box needs, and never clip it */
 for(var a=L.parentElement;a&&a!==d.body&&a!==d.documentElement;a=a.parentElement){var r=a.getBoundingClientRect(),need=Math.round(vh-r.top);
 if(r.bottom<vh-1||getComputedStyle(a).overflow!=="visible"){set(a,"height",need+"px");set(a,"max-height",need+"px");set(a,"min-height","0")}
