@@ -1,0 +1,18 @@
+/* Ari phone-lite v3.34: colors, fonts, corners only. No layout rules. */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap");
+:root{--ari-green:#1b5e3b;--ari-green-deep:#174a31;--ari-gold:#c9a227;--ari-gold-soft:#e9d08f;--ari-cream:#fbf7ee;--ari-ink:#233f33}
+body,body button,body input,body textarea,body select{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
+h1,h2,h3,.hl-title{font-family:"Cormorant Garamond",Georgia,serif;color:var(--ari-ink)}
+body input,body textarea,body select,body [contenteditable]{font-size:16px!important}
+.chat-bubble-outbound{background:linear-gradient(150deg,#22603f,#174a31)!important;color:var(--ari-cream)!important;border:1px solid #e9d08f8c!important;border-radius:18px 18px 6px 18px!important}
+.chat-bubble-outbound *{color:var(--ari-cream)!important}
+.chat-bubble-outbound a{color:var(--ari-gold-soft)!important}
+.chat-bubble-inbound{background:linear-gradient(150deg,#f6e7b8,#e9d08f)!important;color:var(--ari-ink)!important;border:1px solid #c9a22766!important;border-radius:18px 18px 18px 6px!important}
+.chat-bubble-inbound *{color:var(--ari-ink)!important}
+#ari-join{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
+#ari-join .ari-join-btn{background:linear-gradient(160deg,#e9d08f,#c9a227)!important;color:#173e30!important;border:1px solid #b08a1e!important;border-radius:999px!important;font-weight:600}
+#ari-join .ari-join-back{background:var(--ari-green)!important;color:var(--ari-cream)!important;border-color:var(--ari-gold)!important}
+#ari-join .ari-join-note{color:var(--ari-ink)}
+.hr-button--primary-type,.n-button--primary-type,button[type=submit]{background-color:var(--ari-green)!important;border-color:var(--ari-green)!important;color:#fff!important;border-radius:999px}
+.conversation-list-header button[aria-current=true]{color:var(--ari-green)!important;border-color:var(--ari-gold)!important}
+a{color:var(--ari-green)}
