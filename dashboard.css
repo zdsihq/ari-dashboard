@@ -91,7 +91,7 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #ari-join{bottom:var(--ari-crd-join-
 }
 
 /* crd3: narrower customer panel, wider chat (desktop only) */
-@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 290px!important;width:290px!important;min-width:0!important;max-width:290px!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column :is(#conversations-contact-details,#contacts-highrise-right-side-bar-wrapper,#new-conversation-right-side-bar){width:100%!important;min-width:0!important;max-width:100%!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column :is(input,textarea,select){max-width:100%!important;box-sizing:border-box}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list{flex:0 0 310px!important;width:310px!important;min-width:0!important;max-width:310px!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex-basis:300px!important;width:300px!important;max-width:300px!important}}
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 290px!important;width:290px!important;min-width:0!important;max-width:290px!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column :is(#conversations-contact-details,#contacts-highrise-right-side-bar-wrapper,#new-conversation-right-side-bar){width:100%!important;min-width:0!important;max-width:100%!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column :is(input,textarea,select){max-width:100%!important;box-sizing:border-box}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list{flex:0 0 340px!important;width:340px!important;min-width:0!important;max-width:340px!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex-basis:300px!important;width:300px!important;max-width:300px!important}}
 
 /* crd4: modern polish - soft hairline borders, light shadows, clean fields */
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html){--k-line:#e8dcc4;--k-card-sh:0 1px 2px #1234240a,0 8px 24px #1234240f}
@@ -126,3 +126,8 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-layout{max-width:100%
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-crd-name],html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-crd-name] *{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] :is(h1,h2,h3,h4,[class*=name],[class*=title]):not(button):not(button *){color:#f4efe3!important}
 @media (max-width:767px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :is(#conversations-central-panel-viewer,#conversation-view-wrapper,.central-panel){overflow-x:hidden!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :has(>:has(>[data-ari-bubble])){padding-bottom:64px!important}}
+
+/* crd7: live phone fixes from real DOM */
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] :is(h1,h2,h3,h4,[class*=name],[class*=title],.truncate):not(button):not(button *){-webkit-text-fill-color:#f4efe3!important;color:#f4efe3!important}
+@media (max-width:767px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .conversation-panel{padding-bottom:72px!important;overflow-x:hidden!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .conversation-panel .chat-outbound-hidden{max-width:100%!important}}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-list .conversation-list-container [class*=ml-\[12px\]]{margin-left:10px!important}
