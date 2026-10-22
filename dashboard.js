@@ -2977,3 +2977,27 @@ w[K]={version:'tkb2',label:label};
 })(window,document);
 
 }catch(e){console.warn("ari block 57",e)}
+
+try{
+/* crd2: Ari Chats redesign (G.B.3.0 designs). Chats page only. Adds a banner, marks the panel name card, keeps Join chat above the input. */
+(function(w,d){'use strict';var K='__ariChatsRedesignV1';if(w[K]){w[K].sync();return;}
+var A='data-ari-crd',BID='ari-crd-banner',stopped=false,frame=null,obs=null,timer=null;
+function on(){return /\/conversations\/conversations/.test(w.location.pathname)&&!!d.getElementById('conversations-layout');}
+function mk(){var b=d.createElement('div');b.id=BID;b.setAttribute('aria-hidden','false');
+ var s='';for(var i=0;i<26;i++){var x=(i*37+11)%100,y=(i*53+7)%90,z=i%5===0?'b':'';s+='<i class="ari-crd-star'+(z?' ari-crd-star--b':'')+'" style="left:'+x+'%;top:'+y+'%"></i>';}
+ b.innerHTML='<div class="ari-crd-stars" aria-hidden="true">'+s+'</div><div class="ari-crd-eyebrow">YOUR CHATS</div><h1 class="ari-crd-title">Ari Chats</h1><div class="ari-crd-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';return b;}
+function off(){var h=d.documentElement;h.removeAttribute(A);var b=d.getElementById(BID);if(b)b.remove();d.querySelectorAll('[data-ari-crd-name]').forEach(function(e){e.removeAttribute('data-ari-crd-name');});d.querySelectorAll('.ari-crd-spark').forEach(function(e){e.remove();});h.style.removeProperty('--ari-crd-join-b');}
+function sync(){frame=null;if(stopped)return;if(!on()){if(d.documentElement.hasAttribute(A))off();return;}var h=d.documentElement;if(h.getAttribute(A)!=='v1')h.setAttribute(A,'v1');
+ var lay=d.getElementById('conversations-layout');var b=d.getElementById(BID);if(!b||b.nextElementSibling!==lay){if(b)b.remove();lay.parentElement.insertBefore(mk(),lay);}
+ /* panel name card: smallest box holding both the avatar and the name */
+ var col=d.getElementById('conversations-right-column');if(col){var nm=col.querySelector('[data-ari-dname]'),av=col.querySelector('[data-ari-dav]');
+  if(nm){var box=nm.parentElement;if(av){while(box&&box!==col&&!box.contains(av))box=box.parentElement;}if(box&&box!==col&&!box.hasAttribute('data-ari-crd-name')){var o=col.querySelector('[data-ari-crd-name]');if(o)o.removeAttribute('data-ari-crd-name');box.setAttribute('data-ari-crd-name','1');}
+   if(box&&box!==col&&!box.querySelector('.ari-crd-spark')){var sp=d.createElement('span');sp.className='ari-crd-spark';sp.setAttribute('aria-hidden','true');sp.textContent='\u2726';box.appendChild(sp);}}}
+ /* Join chat sits above the message input, never over it */
+ var cb=d.querySelector('#conversations-central-panel-viewer [data-ari-composer-bar]');if(cb){var r=cb.getBoundingClientRect();if(r.height>0){var v=Math.max(16,Math.round(w.innerHeight-r.top+12))+'px';if(h.style.getPropertyValue('--ari-crd-join-b')!==v)h.style.setProperty('--ari-crd-join-b',v);}}}
+function queue(){if(frame===null&&!stopped)frame=w.setTimeout(function(){w.requestAnimationFrame(sync);},200);}
+function watch(){if(!d.body)return w.setTimeout(watch,50);obs=new w.MutationObserver(function(){if(on()||d.documentElement.hasAttribute(A))queue();});obs.observe(d.body,{childList:true,subtree:true});}
+w.addEventListener('resize',queue);w.addEventListener('popstate',queue);timer=w.setInterval(queue,1500);watch();sync();
+w[K]={version:'crd2',sync:sync,stop:function(){stopped=true;w.clearInterval(timer);if(obs)obs.disconnect();off();delete w[K];}};
+})(window,document);
+}catch(e){console.warn("ari block crd2",e)}
