@@ -2786,10 +2786,15 @@ P.rename=function(){qa('#sb_conversations .nav-title, #sb_conversations [class*=
  if(/^conversations/.test(sub())&&/Messages|Conversations/.test(d.title)&&allow(d)){d.title='Ari Chats';hit('rename');}};
 P.warn=function(){texts(/make sure you have entered a message/i).forEach(function(t){hide(up(t,'[role="tooltip"],[class*="tooltip"],[class*="popover"]',8)||t.parentElement,'warn');});};
 P.plus=function(){if(!/^conversations/.test(sub()))return;
- qa('#new-conversation-btn-collapsed,#new-conversation-btn,[id^="new-conversation"],[aria-label="Add conversation"],[aria-label*="new conversation" i],[aria-label*="compose" i]').forEach(function(b){hide(b,'plus');});
- qa('#conversations-layout button').forEach(function(b){if(/^ari-/.test(b.id||''))return;var t=norm(b.textContent),a=norm(b.getAttribute('aria-label')||b.getAttribute('title')||'');
+ var RC='#conversations-right-column,#conversations-contact-details,[aria-label="Contact details"],#new-conversation-right-side-bar';
+ qa('#conversations-right-column,#conversations-contact-details,[aria-label="Contact details"],#new-conversation-right-side-bar').forEach(function(r){[r].concat([].slice.call(r.querySelectorAll('['+H+'="plus"]'))).forEach(function(n){unhide(n,'plus');});});
+ function inRC(b){return !!(b.closest&&b.closest(RC));}
+ function small(b){var tg=b.tagName;if(!(tg==='BUTTON'||tg==='A'||(b.getAttribute('role')||'')==='button'))return false;if(b.querySelectorAll('*').length>12)return false;var r=b.getBoundingClientRect();return !(r.width>=80||r.height>=80);}
+ function ok(b){return b&&!inRC(b)&&small(b);}
+ qa('#new-conversation-btn-collapsed,#new-conversation-btn,[id^="new-conversation"],[aria-label="Add conversation"],[aria-label*="new conversation" i],[aria-label*="compose" i]').forEach(function(b){if(!ok(b)){var c=b.closest&&b.closest('button,a,[role="button"]');if(c&&c!==b&&ok(c))b=c;else return;}hide(b,'plus');});
+ qa('#conversations-layout button').forEach(function(b){if(/^ari-/.test(b.id||''))return;if(!ok(b))return;var t=norm(b.textContent),a=norm(b.getAttribute('aria-label')||b.getAttribute('title')||'');
   if(t==='+'||/^(add|new|plus|\+)$/i.test(a)||(b.closest('.conversation-list-header')&&b.classList.contains('hr-button--primary')&&!t))hide(b,'plus');});
- texts(/^(My inbox|Views|Internal chat|Team inbox)$/i).forEach(function(t){var m=up(t,'[role="menu"],[role="listbox"],.hr-dropdown-menu,.n-dropdown-menu,[class*="dropdown-menu"],.hr-popover,[class*="popover"]',8);if(m)hide(m,'plus');});};
+ texts(/^(My inbox|Views|Internal chat|Team inbox)$/i).forEach(function(t){var m=up(t,'[role="menu"],[role="listbox"],.hr-dropdown-menu,.n-dropdown-menu,[class*="dropdown-menu"],.hr-popover,[class*="popover"]',8);if(m&&!inRC(m))hide(m,'plus');});};
 /* info box: text only. Field boxes are left alone (changing them could save into the customer). */
 P.info=function(){var rc=qa('#conversations-right-column')[0]||(/^contacts\/detail/.test(sub())?d.body:null);if(!rc)return;
  texts(/\bAI assistant\b/i,rc).forEach(function(t){if(setText(t,t.nodeValue.replace(/\bthe AI assistant\b/gi,'Ari').replace(/\bAI assistant\b/gi,'Ari')))hit('info');});
