@@ -282,3 +282,4 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) :is(#conversations-list,#conversat
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(#conversations-content,.conversation-panel,#conversations-content>div){border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;background:transparent!important;margin-left:0!important;margin-right:0!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) body #app{flex:0 0 auto!important;flex-shrink:0!important;height:100%!important;max-height:none!important;min-height:0!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout :is(#conversations-content,#conversations-main-column,#conversations-workspace,#conversations-panel){flex:1 1 0%!important;min-height:0!important}
 }
+@media (max-width:480px){.ari-one-flat::before,.ari-one-flat::after{display:none!important;content:none!important}}
