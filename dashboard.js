@@ -2805,6 +2805,30 @@ P.info=function(){var rc=qa('#conversations-right-column')[0]||(/^contacts\/deta
  [].forEach.call((rc.querySelectorAll?rc:d).querySelectorAll('.hr-collapse-item,.n-collapse-item'),function(s){var hd=s.querySelector('.hr-collapse-item__header,.n-collapse-item__header');var h=norm(hd&&hd.textContent);
   if(!/^(Form \| Booking details|Ari(?![a-z])(?! ?Chat Summary))/i.test(h))return;
   var filled=[].some.call(s.querySelectorAll('input,textarea'),function(f){return norm(f.value);});if(!filled)hide(s,'info');else unhide(s,'info');});};
+/* simple customer panel (panel-simple-v1): the right column shows only name, birthday, email, phone, readings/booking info, Psychic Notes and Ari Chat Summary.
+   Matches by label text. Hides only pieces INSIDE the panel, never the panel itself or anything holding a kept field. Empty kept fields stay visible ("--"). */
+P.simple=function(){if(!/^conversations/.test(sub()))return;var rc=qa('#conversations-right-column')[0];if(!rc||!rc.querySelectorAll)return;
+ var KEEP=/^(email|e-mail|phone|phone number|mobile|date of birth|birthday|birth ?date|dob|ari chat summary|psychic notes?|total readings?|last reading( date)?|next reading( date)?|past readings?|upcoming readings?)\s*\*?$/i,
+  SEC=/^(form \| booking details|psychic notes?|readings?|bookings?|upcoming|appointments?)\b/i,W='simple',keep=[],drop=[];
+ function safe(n){return n&&n!==rc&&rc.contains(n)&&!keep.some(function(k){return n.contains(k)||k.contains(n);});}
+ function label(f){var l=f.querySelector('.hr-form-item-label__text,.n-form-item-label__text,label');return norm(l&&l.textContent);}
+ [].forEach.call(rc.querySelectorAll('.hr-form-item,.n-form-item'),function(f){var t=label(f);if(!t)return;
+  var box=up(f,'#field-container,[data-pendo-id^="contact-details-field-"]',4)||f;if(!rc.contains(box))box=f;(KEEP.test(t)?keep:drop).push(box);});
+ keep.forEach(function(n){unhide(n,W);});
+ drop.forEach(function(n){if(safe(n))hide(n,W);});
+ [].forEach.call(rc.querySelectorAll('.hr-collapse-item,.n-collapse-item'),function(s){var hd=s.querySelector('.hr-collapse-item__header,.n-collapse-item__header');var h=norm(hd&&hd.textContent);
+  var has=keep.some(function(k){return s.contains(k);});if(has!==s.hasAttribute('data-ari-simple-open'))s.toggleAttribute('data-ari-simple-open',has);
+  if(SEC.test(h)){unhide(s,W);return;}if(safe(s))hide(s,W);else unhide(s,W);});
+ /* clutter: field tabs + field search, record link, owner/followers/tags/DND/actions, created/audit footer */
+ var C=[];
+ [].forEach.call(rc.querySelectorAll('[role="tablist"],.hr-tabs-nav,.n-tabs-nav'),function(n){C.push(n);});
+ [].forEach.call(rc.querySelectorAll('input[placeholder]'),function(i){if(/^search fields/i.test(i.getAttribute('placeholder')))C.push(up(i,'.hr-input-container,.n-input',4)||i);});
+ texts(/^(All fields|View contact details|Owner|Followers|Tags( \(\d+\))?|DND|Actions|Audit logs|CONVERSATIONS|Created (by|on):.*)$/i,rc).forEach(function(t){var e=t.parentElement;
+  var b=up(e,'button,a,[role="tab"],[role="button"]',3);C.push(b||e);});
+ [].forEach.call(rc.querySelectorAll('a[href*="/contacts/detail/"]'),function(a){C.push(a);});
+ C.forEach(function(n){if(safe(n))hide(n,W);});
+ if(rc.getAttribute('data-ari-simple-panel')!=='v1')rc.setAttribute('data-ari-simple-panel','v1');
+ if(rc.getAttribute(H)===W){rc.removeAttribute(H);rc.style.removeProperty('display');}};
 /* You / Ari labels. Ari's replies carry the platform's AI marker. */
 var AIMARK='[class*="sparkle" i],[id*="sparkle" i],[aria-label],[title],[data-testid],[class*="ai-generated" i],[class*="ai-badge" i],[class*="bot-" i],[class*="-bot" i]';
 /* try 5: Ari's replies carry the platform's small purple badge (bg #EBE9FE / text #6938EF); the psychic's carry her initials avatar (.hr-avatar). */
