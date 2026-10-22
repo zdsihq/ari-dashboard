@@ -228,3 +228,24 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html)[data-ari-list-hold] #conversations-l
 /* crd18: v22 - gold ring on New message, right column fits (my-2 top margin) */
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :is([data-ari-msg-new],button[data-ari-new-message]){background:var(--k-active)!important;box-shadow:0 0 0 2px var(--k-gold),0 6px 16px #1b5e3b47!important}
 @media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{margin-top:8px!important;margin-bottom:0!important;box-sizing:border-box!important;height:calc(100% - 8px)!important;max-height:calc(100% - 8px)!important}}
+
+/* v3.21 phone: flat list, compact rows, fit to viewport */
+@media (width<=480px){
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-layout{height:calc(100dvh - var(--ari-ph-top,130px))!important;max-height:calc(100dvh - var(--ari-ph-top,130px))!important;min-height:0!important;padding:0!important;gap:0!important;margin:0!important;overflow:hidden!important;box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list{border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;margin:0!important;width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;min-height:0!important;background:var(--k-ivory,#fffdf8)!important;border-top:1px solid #eadfcb!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding-bottom:16px!important;box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list>*{border-radius:0!important;box-shadow:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list .conversation-list-header{padding:10px 12px 6px!important;margin:0!important;border:0!important;position:sticky;top:0;z-index:2;background:var(--k-ivory,#fffdf8)!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list .conversation-list-header div:has(>input[placeholder*="earch"]),html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list .conversation-list-header div:has(>[data-ari-msg-new]){gap:10px!important;align-items:center!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list [data-ari-msg-new]{flex:none!important;margin-left:6px!important;margin-right:4px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list input[placeholder*="earch"]{padding:7px 14px!important;min-width:0!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-messages-list-intro{display:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-messages-layout-controls{min-height:0!important;padding:0 8px!important;margin:0!important;gap:4px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-messages-list-toggle{min-height:28px!important;height:28px!important;padding:0 8px!important;margin:0!important;font-size:13px!important;line-height:28px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-row]{margin:0!important;padding:0!important;border-radius:0!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-card],html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-card=inner]{margin:0!important;width:100%!important;max-width:100%!important;height:100%!important;border-radius:0!important;border:0!important;border-bottom:1px solid #17231d14!important;padding:6px 14px!important;box-shadow:none!important;box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-row=selected] [data-ari-conv-card]{box-shadow:inset 3px 0 0 var(--k-gold,#c9a55a)!important;border-bottom-color:#17231d14!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-card] [data-ari-conv-av]{width:32px!important;min-width:32px!important;height:32px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) [data-ari-conv-card] div:has(>div>[data-ari-conv-preview]){margin-top:2px!important;margin-left:46px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list .conv-item:not([style*="transform"]):not([style*="top:"]){height:auto!important;min-height:62px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) body[data-ari-show-list] #ari-join{display:none!important}
+}
