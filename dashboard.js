@@ -2986,7 +2986,7 @@ function on(){return /\/conversations\/conversations/.test(w.location.pathname)&
 function mk(){var b=d.createElement('div');b.id=BID;b.setAttribute('aria-hidden','false');
  var s='';for(var i=0;i<26;i++){var x=(i*37+11)%100,y=(i*53+7)%90,z=i%5===0?'b':'';s+='<i class="ari-crd-star'+(z?' ari-crd-star--b':'')+'" style="left:'+x+'%;top:'+y+'%"></i>';}
  b.innerHTML='<div class="ari-crd-stars" aria-hidden="true">'+s+'</div><div class="ari-crd-eyebrow">YOUR CHATS</div><h1 class="ari-crd-title">Ari Chats</h1><div class="ari-crd-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';return b;}
-function off(){var h=d.documentElement;h.removeAttribute(A);var b=d.getElementById(BID);if(b)b.remove();d.querySelectorAll('[data-ari-crd-name]').forEach(function(e){e.removeAttribute('data-ari-crd-name');});d.querySelectorAll('.ari-crd-spark').forEach(function(e){e.remove();});h.style.removeProperty('--ari-crd-join-b');}
+function off(){var h=d.documentElement;h.removeAttribute(A);var b=d.getElementById(BID);if(b)b.remove();d.querySelectorAll('[data-ari-crd-name]').forEach(function(e){e.removeAttribute('data-ari-crd-name');});d.querySelectorAll('.ari-crd-spark').forEach(function(e){e.remove();});h.style.removeProperty('--ari-crd-join-b');var x=d.getElementById('ari-crd-bext');if(x)x.remove();}
 function sync(){frame=null;if(stopped)return;if(!on()){if(d.documentElement.hasAttribute(A))off();return;}var h=d.documentElement;if(h.getAttribute(A)!=='v1')h.setAttribute(A,'v1');
  var lay=d.getElementById('conversations-layout');var b=d.getElementById(BID);if(!b||b.nextElementSibling!==lay){if(b)b.remove();lay.parentElement.insertBefore(mk(),lay);}
  /* panel name card: smallest box holding both the avatar and the name */
@@ -2996,7 +2996,12 @@ function sync(){frame=null;if(stopped)return;if(!on()){if(d.documentElement.hasA
  /* Join chat sits above the message input, never over it */
  var cb=d.querySelector('#conversations-central-panel-viewer [data-ari-composer-bar]');if(cb){var r=cb.getBoundingClientRect();if(r.height>0){var v=Math.max(16,Math.round(w.innerHeight-r.top+12))+'px';if(h.style.getPropertyValue('--ari-crd-join-b')!==v)h.style.setProperty('--ari-crd-join-b',v);}}
  /* banner reaches the right edge on desktop */
- b=d.getElementById(BID);if(b&&b.parentElement){var pr=b.parentElement.getBoundingClientRect(),g=w.innerWidth>767?Math.max(0,Math.min(80,Math.round(d.documentElement.clientWidth-pr.right))):0,gv=g+'px';if(h.style.getPropertyValue('--ari-crd-bgap')!==gv)h.style.setProperty('--ari-crd-bgap',gv);}
+ b=d.getElementById(BID);if(b&&b.parentElement){var pr=b.parentElement.getBoundingClientRect(),g=w.innerWidth>767?Math.max(0,Math.min(80,Math.round(d.documentElement.clientWidth-pr.right))):0,gv=g+'px';if(h.style.getPropertyValue('--ari-crd-bgap')!==gv)h.style.setProperty('--ari-crd-bgap',gv);
+  /* v11: an ancestor clips the banner; paint the clipped right part with a fixed copy that no wrapper can clip */
+  var x=d.getElementById('ari-crd-bext');if(!x){x=d.createElement('div');x.id='ari-crd-bext';x.setAttribute('aria-hidden','true');d.body.appendChild(x);}
+  var br=b.getBoundingClientRect(),vis=br.right,a=b.parentElement;while(a&&a!==d.body&&a!==d.documentElement){var cs=w.getComputedStyle(a);if(cs.overflowX!=='visible'){vis=Math.min(vis,a.getBoundingClientRect().right);}a=a.parentElement;}
+  var cut=Math.round(br.right-vis);if(g>0&&cut>0&&br.height>0&&br.bottom>0){x.style.cssText='display:block;left:'+br.left+'px;top:'+br.top+'px;width:'+br.width+'px;height:'+br.height+'px;clip-path:inset(0 0 0 '+Math.max(0,Math.round(vis-br.left))+'px)';}else if(x.style.display!=='none'){x.style.cssText='display:none';}}
+ else{var x0=d.getElementById('ari-crd-bext');if(x0)x0.style.cssText='display:none';}
  /* phone: open each chat at the bottom, and stay there if already at the bottom */
  if(w.innerWidth<=767){var cp=d.querySelector('#conversations-central-panel-viewer .conversation-panel')||d.querySelector('.conversation-panel');if(cp){var key=w.location.pathname;
   if(!cp.__ariB){cp.__ariB=1;cp.__ariAt=true;cp.addEventListener('scroll',function(){cp.__ariAt=cp.scrollHeight-cp.scrollTop-cp.clientHeight<60;},{passive:true});}
@@ -3004,7 +3009,7 @@ function sync(){frame=null;if(stopped)return;if(!on()){if(d.documentElement.hasA
   if((cp.__ariAt||Date.now()-cp.__ariT<2500)&&cp.scrollHeight-cp.scrollTop-cp.clientHeight>2){cp.scrollTop=cp.scrollHeight;cp.__ariAt=true;}}}}
 function queue(){if(frame===null&&!stopped)frame=w.setTimeout(function(){w.requestAnimationFrame(sync);},200);}
 function watch(){if(!d.body)return w.setTimeout(watch,50);obs=new w.MutationObserver(function(){if(on()||d.documentElement.hasAttribute(A))queue();});obs.observe(d.body,{childList:true,subtree:true});}
-w.addEventListener('resize',queue);w.addEventListener('popstate',queue);timer=w.setInterval(queue,1500);watch();sync();
+w.addEventListener('resize',queue);w.addEventListener('popstate',queue);w.addEventListener('scroll',queue,true);timer=w.setInterval(queue,1500);watch();sync();
 w[K]={version:'crd2',sync:sync,stop:function(){stopped=true;w.clearInterval(timer);if(obs)obs.disconnect();off();delete w[K];}};
 })(window,document);
 }catch(e){console.warn("ari block crd2",e)}
