@@ -211,9 +211,7 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ar
 @media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 360px!important;width:360px!important;max-width:360px!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] [data-ari-thread-name]:not(button):not(button *),[data-ari-thread-head] [data-ari-thread-name] *:not(button):not(button *){color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;opacity:1!important;font-weight:600!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) [data-ari-thread-head] .truncate:not(button):not(button *){color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;opacity:1!important}}
-/* crd14: v18 - page scroll (84px banner pushed content past overflow:hidden wrappers), wider panel */
-@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .hl_wrapper.hl_topbar-tabs{overflow-y:auto!important}
-html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-content{overflow-y:auto!important}
-html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) .conversations-content{overflow-y:auto!important}
+/* crd15: v19 - layout fits under banner (no wrapper scrolling), wider panel */
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-layout{height:calc(100% - var(--ari-crd-bh,84px))!important;max-height:calc(100% - var(--ari-crd-bh,84px))!important;min-height:0!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-central-panel-viewer{min-width:480px!important}}
 @media (min-width:1280px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column{flex:0 0 420px!important;width:420px!important;max-width:420px!important}}
