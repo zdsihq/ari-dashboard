@@ -264,3 +264,10 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner .ari-crd-eyebrow{m
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #ari-crd-banner .ari-crd-title{font-size:28px!important;padding:2px 0 16px!important;line-height:1.05!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-list{border-radius:18px!important}
 }
+
+/* v3.24 phone: open chat flat (no box inside a box); JS sets heights */
+@media (width<=480px){
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer{border:1px solid #eadfcb!important;border-radius:18px!important;box-shadow:none!important;margin:0!important;flex-direction:column;overflow:hidden!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(.central-panel,#conversation-view-wrapper,[data-ari-crd-card]){border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;background:transparent!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) #conversations-central-panel-viewer :is(.conversation-panel,#conversations-content){flex:1 1 auto!important;min-height:0!important}
+}

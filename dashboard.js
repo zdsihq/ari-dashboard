@@ -1,3 +1,24 @@
+/* v3.24 phone: size the chat box and its GHL ancestors to the visible viewport */
+!function(w,d){if(w.__ariFit)return;w.__ariFit=1;var T=[],q=0,P=["height","max-height","min-height","overflow","border","border-radius","box-shadow","margin-bottom","padding-bottom","flex"];
+function ph(){return w.matchMedia("(max-width:480px)").matches}
+function set(e,k,v){e.__ariFitOld||(e.__ariFitOld={},T.push(e));k in e.__ariFitOld||(e.__ariFitOld[k]=[e.style.getPropertyValue(k),e.style.getPropertyPriority(k)]);e.style.setProperty(k,v,"important")}
+function undo(){T.forEach(function(e){var o=e.__ariFitOld;for(var k in o)o[k][0]?e.style.setProperty(k,o[k][0],o[k][1]):e.style.removeProperty(k);e.__ariFitOld=null});T=[]}
+function fit(){q=0;var L=d.getElementById("conversations-layout");if(!L||!ph()){T.length&&undo();return}
+for(var c=L.parentElement;c;c=c.parentElement)c.scrollTop>0&&(c.scrollTop=0);w.scrollY>0&&w.scrollTo(0,0);
+var vv=w.visualViewport,vh=Math.round(vv?vv.height:w.innerHeight),gap=8;
+var top=L.getBoundingClientRect().top,h=Math.max(240,Math.round(vh-top-gap));
+set(L,"height",h+"px");set(L,"max-height",h+"px");set(L,"min-height","0");set(L,"flex","none");
+/* ancestors: never shorter than what the box needs, and never clip it */
+for(var a=L.parentElement;a&&a!==d.body&&a!==d.documentElement;a=a.parentElement){var r=a.getBoundingClientRect(),need=Math.round(vh-r.top);
+if(r.bottom<vh-1||getComputedStyle(a).overflow!=="visible"){set(a,"height",need+"px");set(a,"max-height",need+"px");set(a,"min-height","0")}
+var cs=getComputedStyle(a);(parseFloat(cs.borderTopWidth)||parseFloat(cs.borderRadius)||cs.boxShadow!=="none")&&(set(a,"border","0"),set(a,"border-radius","0"),set(a,"box-shadow","none"));
+parseFloat(cs.paddingBottom)>8&&set(a,"padding-bottom","0")}
+/* the visible pane fills the layout */
+["conversations-list","conversations-central-panel-viewer","conversations-right-column"].forEach(function(id){var e=d.getElementById(id);e&&getComputedStyle(e).display!=="none"&&(set(e,"height","100%"),set(e,"max-height","100%"),set(e,"min-height","0"))})}
+function s(){q||(q=setTimeout(fit,60))}
+w.addEventListener("resize",s);w.addEventListener("orientationchange",s);w.addEventListener("popstate",s);w.visualViewport&&(w.visualViewport.addEventListener("resize",s),w.visualViewport.addEventListener("scroll",s));
+["pushState","replaceState"].forEach(function(m){var o=history[m];history[m]=function(){var r=o.apply(this,arguments);s();setTimeout(s,400);return r}});
+d.addEventListener("click",function(){setTimeout(s,300)},!0);setInterval(fit,1000);s()}(window,document);
 !function(w,d){if(w.__ariPT)return;w.__ariPT=1;var q=0;function ph(){return w.matchMedia("(max-width:480px)").matches}function snap(){if(this.scrollTop>0&&ph()&&d.getElementById("conversations-layout"))this.scrollTop=0}function f(){q=0;var e=d.getElementById("conversations-layout");if(!e||!ph())return;for(var c=e.parentElement;c;c=c.parentElement){c.scrollTop>0&&(c.scrollTop=0);c.__ariPS||(c.__ariPS=1,c.addEventListener("scroll",snap,{passive:!0}))}(w.scrollY||d.documentElement.scrollTop)>0&&w.scrollTo(0,0);var t=Math.max(0,Math.round(e.getBoundingClientRect().top+(w.scrollY||0)));d.documentElement.style.setProperty("--ari-ph-top",t+"px")}function s(){q||(q=setTimeout(f,120))}w.addEventListener("resize",s);w.addEventListener("scroll",function(){ph()&&d.getElementById("conversations-layout")&&(w.scrollY>0&&w.scrollTo(0,0))},{passive:!0});w.addEventListener("orientationchange",s);setInterval(f,1500)}(window,document);
 /* v3.21 phone: open on the chat list (All tab) unless the user picked a chat or deep-linked one */
 !function(w,d){if(w.__ariAL)return;w.__ariAL=1;var p0=location.pathname;try{var ne=performance.getEntriesByType("navigation")[0];ne&&ne.name&&(p0=new URL(ne.name).pathname)}catch(e){}var picked=!1,first=!0,allDone=!1;
