@@ -183,3 +183,22 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #contact
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #contact\.ari_chat_summary .hr-input{width:100%!important;max-width:none!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #contact\.phone .hr-input__prefix{display:flex!important;align-items:center!important;flex:0 0 auto!important;width:auto!important;min-width:40px!important;visibility:visible!important}
 html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #contact\.phone .country-code-container{display:flex!important;align-items:center!important;width:auto!important}}
+/* crd12: v16 - live markup selectors (card-points.txt) */
+@media (min-width:768px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .rounded-md.bg-white.p-3{background:#faf3e3!important;background-color:#faf3e3!important;width:100%!important;box-sizing:border-box!important;border:1px solid #ece2cf!important;border-radius:18px!important;padding:16px 14px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .rounded-md.bg-white.p-3>.justify-between{flex-direction:column!important;align-items:center!important;width:100%!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .flex-1.gap-4.min-w-0{flex-direction:column!important;align-items:center!important;gap:8px!important;width:100%!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .w-full.min-w-0.justify-between.gap-2{justify-content:center!important;width:100%!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .gap-2.min-w-0.flex-1.overflow-hidden{justify-content:center!important;flex:0 1 auto!important;max-width:100%!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column p.hr-text-semibold.text-gray-900{text-align:center!important;color:#1f3a2e!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .rounded-md.bg-white.p-3 [data-ari-dname]{color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;font-weight:600!important;opacity:1!important;text-align:center!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-collapse-item{background:#faf3e3!important;background-color:#faf3e3!important;padding:12px 8px!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-collapse-item__content-wrapper{background:transparent!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-collapse-item__content-inner{background:transparent!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-collapse-item__header{background:transparent!important;background-color:transparent!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #field-container{width:100%!important;max-width:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column #inline-standard-email{width:100%!important;max-width:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-form{width:100%!important;max-width:none!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column .hr-form-item__container{width:100%!important;max-width:none!important}}
+/* crd12b: JS-tagged cards (data-ari-crd=ari-card / ari-name) */
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-card]{background:#faf3e3!important;background-color:#faf3e3!important;width:100%!important;max-width:none!important;box-sizing:border-box!important}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #conversations-right-column [data-ari-crd=ari-name]{color:#1f3a2e!important;-webkit-text-fill-color:#1f3a2e!important;font-weight:600!important;opacity:1!important;text-align:center!important}
