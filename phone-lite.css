@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.35: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
+/* Ari phone-lite v3.36: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap");
 :root{--ari-green:#1b5e3b;--ari-green-deep:#174a31;--ari-gold:#c9a227;--ari-gold-soft:#e9d08f;--ari-cream:#fbf7ee;--ari-ink:#233f33}
 body,body button,body input,body textarea,body select{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
@@ -28,7 +28,23 @@ body[data-arl-chat]:not([data-arl-open]) #conversations-central-panel-viewer,bod
 body[data-arl-chat]:not([data-arl-open]) #conversations-list,body[data-arl-open]:not([data-arl-list]) #conversations-central-panel-viewer,body[data-arl-open][data-arl-list] #conversations-list{flex:100%!important;width:100%!important;min-width:0!important;max-width:100%!important}
 body[data-arl-info] #conversations-layout :is(#conversations-central-panel-viewer,#conversations-list),body[data-arl-info] #conversations-layout #conversations-panel:not(:has(#conversations-right-column)){display:none!important}
 body[data-arl-info] #conversations-layout :is(#conversations-right-column,:has(>#conversations-right-column)){display:flex!important;flex:auto!important;width:100%!important;min-width:0!important;max-width:none!important}
-body[data-arl-chat] :is(#conversations-central-panel-viewer,#conversations-right-column,#conversations-list){position:relative}
-#ari-lite-bar{position:absolute;top:6px;right:6px;z-index:6;display:flex;gap:6px;font-family:Jost,"Helvetica Neue",Arial,sans-serif}
-#ari-lite-bar button{font-size:13px;line-height:1;padding:7px 11px;border-radius:999px;border:1px solid var(--ari-gold);background:var(--ari-cream);color:var(--ari-green);font-weight:600;box-shadow:0 1px 4px #173e3022}
-body:not([data-arl-open]) #ari-lite-bar{display:none}
+/* v3.36: GHL left icon bar becomes a Menu drawer on Ari Chats */
+body[data-arl-chat]:not([data-arl-nav]) .sidebar-v2-location>#sidebar-v2{display:none!important}
+body[data-arl-nav] .sidebar-v2-location>#sidebar-v2{position:fixed!important;top:0!important;bottom:0!important;left:0!important;z-index:120!important;box-shadow:5px 0 22px #173e3040}
+/* v3.36: our pills replace GHL's Conversations/Manual Actions tabs in the top menu */
+[data-arl-top]>:not(#ari-lite-bar){display:none!important}
+[data-arl-top]{display:flex!important;align-items:center;min-width:0;flex:1}
+#ari-lite-bar{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;padding:6px 8px;margin-left:auto;font-family:Jost,"Helvetica Neue",Arial,sans-serif;position:static}
+#ari-lite-bar button{font-size:13px;line-height:1;padding:8px 12px;min-height:34px;border-radius:999px;border:1px solid var(--ari-gold);background:var(--ari-cream);color:var(--ari-green);font-weight:600;white-space:nowrap}
+#ari-lite-bar button[hidden]{display:none}
+/* v3.36: Join chat / Hand back pill, fixed above the message box (v3.32 phone style) */
+#ari-join{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9999;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px;max-width:calc(100vw - 24px);padding:4px;border-radius:999px;background:#fffdf8;border:1px solid #c9a227aa;box-shadow:0 4px 14px #173e302e}
+#ari-join .ari-join-btn{padding:7px 16px!important;font-size:13px!important;line-height:1.2!important;white-space:nowrap;cursor:pointer}
+#ari-join .ari-join-back{background:#fffdf8!important;color:#7a5f22!important;border-color:#c9a227!important}
+#ari-join .ari-join-note{color:#244d40;font-size:12px;padding-left:8px}
+body[data-arl-list] #ari-join,body[data-arl-info] #ari-join,body:not([data-arl-open]) #ari-join{display:none!important}
+/* v3.36: hide GHL's inbox icon rail so the list and chat get the full width */
+body[data-arl-chat] #conversations-layout>div:has(>#conv-inbox-panel-toggle-button){display:none!important}
+/* v3.36: chat area pinned below GHL's header, sized to the visible screen (keyboard aware) */
+body[data-arl-chat] #conversations-layout{position:fixed!important;top:var(--arl-top,96px)!important;left:0!important;right:0!important;height:calc(var(--arl-vh,100dvh) - var(--arl-top,96px))!important;max-height:none!important;width:100vw!important;z-index:5}
+body[data-arl-chat] .hl_header:has(#ari-lite-bar){z-index:30!important}
