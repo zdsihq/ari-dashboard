@@ -10,3 +10,4 @@ Tags are immutable releases: ship changes as a new tag (v2, v3…) rather than m
 No secrets or client data live in this repo.
 
 - v3.41: loader change only. Phone loads full dashboard.css/js on every page except Ari Chats (conversations route), which keeps phone-lite; crossing that boundary on phone reloads once (history hook, no timers). Asset files unchanged.
+- v3.46: phone Ari Chats green name bar flush with card top; header on own paint layer (flicker); sig marker v46
