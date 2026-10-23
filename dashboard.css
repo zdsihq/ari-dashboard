@@ -236,3 +236,4 @@ html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) :is([data-ari-msg-new],button[data-a
 
 
 /* v3.37 desktop: bubbles size to their text instead of collapsing into a thin column */@media (min-width:481px){html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) body .message-item .message-container :has(>[data-ari-bubble]){flex:0 1 auto!important;max-width:100%!important;min-width:0!important}html[data-ari-crd=v1]:is(#c#c#c#c#c#c#c,html) body .message-item .message-container [data-ari-bubble]{max-width:min(560px,100%)!important;min-width:0!important}}
+html[data-ari-crd=v1]:is(#c#c#c#c#c#c,html) #ari-join .ari-join-note{display:inline-flex!important;align-items:center;height:42px;padding:0 16px!important;background:var(--k-ivory,#fffdf8)!important;border:1px solid #e6dcc8;border-radius:999px;box-shadow:0 2px 6px #00000029}

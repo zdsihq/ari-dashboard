@@ -48,3 +48,4 @@ body[data-arl-chat] #conversations-layout>div:has(>#conv-inbox-panel-toggle-butt
 /* v3.36: chat area pinned below GHL's header, sized to the visible screen (keyboard aware) */
 body[data-arl-chat] #conversations-layout{position:fixed!important;top:var(--arl-top,96px)!important;left:0!important;right:0!important;height:calc(var(--arl-vh,100dvh) - var(--arl-top,96px))!important;max-height:none!important;width:100vw!important;z-index:5}
 body[data-arl-chat] .hl_header:has(#ari-lite-bar){z-index:30!important}
+body[data-arl-open]:not([data-arl-list]):not([data-arl-info]) #conversations-central-panel-viewer .conversation-panel{padding-bottom:calc(var(--arl-join-h,42px) + 14px)!important;scroll-padding-bottom:calc(var(--arl-join-h,42px) + 14px)}
