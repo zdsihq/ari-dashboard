@@ -15,3 +15,4 @@ No secrets or client data live in this repo.
 - v3.48: deterministic header row (CENTRALPANEL_NAME) flush green bar, fixed 56px height, gold avatars via CSS
 - v3.49: header icons fit 376px bar with ivory/gold icons, name truncates; Contact Details avatar gold via CSS
 - v3.50: box head now carries an inline gold style for the Contact Details avatar (.hr-avatar) so it is gold from first paint; JS marker v50; CSS unchanged
+- v3.51: phone Ari Chats: GHL inbox icon rail hidden (inbox tools path check no longer depends on stored location id; CSS fallback scoped to html[data-ari-noz]); composer stays one full-width line when expanded; chat header sparkle removed; marker v51
