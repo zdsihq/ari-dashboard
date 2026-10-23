@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.42: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
+/* Ari phone-lite v3.43: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap");
 :root{--ari-green:#1b5e3b;--ari-green-deep:#174a31;--ari-gold:#c9a227;--ari-gold-soft:#e9d08f;--ari-cream:#fbf7ee;--ari-ink:#233f33}
 body,body button,body input,body textarea,body select{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
@@ -75,3 +75,9 @@ body[data-arl-chat] :is(#composer-textarea,[id^=composer-input-]){background:#ff
 body[data-arl-chat] #conversations-central-panel-viewer :has(>#composer-textarea),body[data-arl-chat] #conversations-central-panel-viewer :has(>[id^=composer-input-]){border-color:#c9a22799!important;border-radius:16px!important;background:#fffdf8!important}
 #ari-join{background:linear-gradient(135deg,#fffaee,#f6ecd6)!important;border-color:#c9a227!important}
 body[data-arl-open]:not([data-arl-list]):not([data-arl-info]) #conversations-central-panel-viewer :is(.conversation-panel,[class*=messages-list],[class*=message-list]){padding-bottom:calc(var(--arl-join-h,42px) + 22px)!important;scroll-padding-bottom:calc(var(--arl-join-h,42px) + 22px)}
+
+/* v3.43: hide GHL's header icon row (call, sparkle, megaphone, bell, help, avatar) on phone Ari Chats; banner holds only our pills */
+body[data-arl-chat] header.hl_header :is(.hl_header--controls,#hl_header--copilot-icon,#hl_header--help-icon,[aria-label="Open Profile Menu"],button[aria-label="Voice Calling"]),body[data-arl-chat] header.hl_header:has(#ari-lite-bar)>:not(:has(#ari-lite-bar)):not(#ari-lite-bar){display:none!important}
+body[data-arl-chat] header.hl_header:has(#ari-lite-bar){height:auto!important;min-height:0!important;padding:6px 8px!important;display:flex!important;align-items:center!important}
+body[data-arl-chat] header.hl_header:has(#ari-lite-bar)>:has(#ari-lite-bar){flex:1!important;min-width:0!important;margin:0!important;padding:0!important}
+body[data-arl-chat] #ari-lite-bar{margin-left:auto;padding:4px 2px}
