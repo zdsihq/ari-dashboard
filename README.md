@@ -13,3 +13,4 @@ No secrets or client data live in this repo.
 - v3.46: phone Ari Chats green name bar flush with card top; header on own paint layer (flicker); sig marker v46
 - v3.47: header tag walks up to the full name row (avatar inside), no paint clip, phone bubbles size to text; marker v47
 - v3.48: deterministic header row (CENTRALPANEL_NAME) flush green bar, fixed 56px height, gold avatars via CSS
+- v3.49: header icons fit 376px bar with ivory/gold icons, name truncates; Contact Details avatar gold via CSS
