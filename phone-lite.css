@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.36: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
+/* Ari phone-lite v3.42: colors, fonts, corners + minimal one-pane chat layout (selectors from v3.32 phone section). */
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@400;500;600&display=swap");
 :root{--ari-green:#1b5e3b;--ari-green-deep:#174a31;--ari-gold:#c9a227;--ari-gold-soft:#e9d08f;--ari-cream:#fbf7ee;--ari-ink:#233f33}
 body,body button,body input,body textarea,body select{font-family:Jost,"Helvetica Neue",Arial,sans-serif}
@@ -49,3 +49,29 @@ body[data-arl-chat] #conversations-layout>div:has(>#conv-inbox-panel-toggle-butt
 body[data-arl-chat] #conversations-layout{position:fixed!important;top:var(--arl-top,96px)!important;left:0!important;right:0!important;height:calc(var(--arl-vh,100dvh) - var(--arl-top,96px))!important;max-height:none!important;width:100vw!important;z-index:5}
 body[data-arl-chat] .hl_header:has(#ari-lite-bar){z-index:30!important}
 body[data-arl-open]:not([data-arl-list]):not([data-arl-info]) #conversations-central-panel-viewer .conversation-panel{padding-bottom:calc(var(--arl-join-h,42px) + 14px)!important;scroll-padding-bottom:calc(var(--arl-join-h,42px) + 14px)}
+/* v3.42: Ari look on the phone Ari Chats page only (styles borrowed from dashboard.css luxe) */
+body[data-arl-chat]{--arl-foil:linear-gradient(135deg,#9c7631 0%,#e9d08f 22%,#b58a3e 45%,#f7e7b4 62%,#a57a33 82%,#d9bc74 100%);--arl-line:#eadfc6;background:#fbf6ec!important}
+body[data-arl-chat] .hl_header{background:radial-gradient(90% 60% at 50% 0,#6eaa8247,#0000 70%),linear-gradient(#1b5e3b8c,#0a281ae6),#123f29 url(https://assets.cdn.filesafe.space/8otTGBxdVFDsQ1gNhDg0/media/6ad2dde2cd7225ed379eff55.jpg) 50%/cover!important;border-bottom:1px solid #c9a22799!important;box-shadow:0 3px 14px #0a281a33!important}
+body[data-arl-chat] .hl_header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--arl-foil);opacity:.8;pointer-events:none}
+body[data-arl-chat] .hl_header{position:relative}
+body[data-arl-chat] #ari-lite-bar button{background:linear-gradient(135deg,#fffaee,#f6ecd6)!important;color:#1b5e3b!important;border:1px solid #c9a227!important;box-shadow:0 2px 8px #0a281a40}
+body[data-arl-chat] #conversations-layout,body[data-arl-chat] #conversations-layout :is(#conversations-list,#conversations-central-panel-viewer,#conversations-right-column){background:#fbf6ec!important;border-color:var(--arl-line)!important}
+body[data-arl-chat] #conversations-layout :is(.border,.border-b,.border-t,.border-r,.border-l,[class*=border-gray]){border-color:var(--arl-line)!important}
+body[data-arl-chat] #conversations-list .conversation-list-header{background:#fffdf8!important;border-bottom:1px solid var(--arl-line)!important}
+body[data-arl-chat] #conversations-list .conversation-list-header :is(h1,h2,h3,.hl-title,[class*=title]){font-family:"Cormorant Garamond",Georgia,serif!important;color:#1b5e3b!important;font-weight:600}
+body[data-arl-chat] #conversations-list :is([role=tab],.n-tabs-tab,button)[aria-selected=true],body[data-arl-chat] #conversations-list .n-tabs-tab--active{color:#80682f!important;font-weight:600}
+body[data-arl-chat] #conversations-list :is(.n-tabs-bar,.n-tabs-tab--active::after){background:#c9a227!important}
+body[data-arl-chat] #conversations-list :is(.n-badge-sup,[class*=badge],[class*=bg-blue-6],[class*=bg-primary]){background:var(--arl-foil)!important;color:#173e30!important;border-color:#b08a1e!important;font-weight:600}
+body[data-arl-chat] #conversations-list :is([data-conversation-id],.conversation-list-item,[id^=conversation-item],.hl-conversation-item){background:#fffdf8!important;border:1px solid var(--arl-line)!important;border-radius:16px!important;margin:8px 10px!important;box-shadow:0 2px 10px #80682f14!important;overflow:hidden}
+body[data-arl-chat] #conversations-list :is([data-conversation-id],.conversation-list-item,[id^=conversation-item],.hl-conversation-item):is(.active,.selected,[aria-selected=true],[class*=border-primary],[class*=border-blue]){border-color:#c9a227!important;box-shadow:0 0 0 1px #c9a227,0 4px 14px #c9a22733!important;background:linear-gradient(135deg,#fffaee,#f6ecd6)!important}
+body[data-arl-chat] #conversations-list input[type=checkbox]{accent-color:#1b5e3b}
+body[data-arl-chat] #conversations-central-panel-viewer :is(.conversation-header,header,[class*=header]):first-child{background:#fffdf8!important;border-bottom:1px solid var(--arl-line)!important}
+body[data-arl-chat] #conversations-central-panel-viewer .conversation-panel{background:radial-gradient(80% 30% at 100% 0,#f4dcd58c,#0000 70%),#fbf6ec!important}
+.chat-bubble-outbound{background:radial-gradient(120% 80% at 20% 0,#2d7a5266,#0000 60%),linear-gradient(150deg,#1d5a3c,#123f29)!important;border:1px solid #e3c98ea6!important;box-shadow:0 2px 8px #123f2933,inset 0 0 0 1px #e9d08f1f!important}
+.chat-bubble-inbound{background:linear-gradient(150deg,#f7e7b4,#e3c98e)!important;border:1px solid #c9a22780!important;box-shadow:0 2px 8px #80682f1f!important}
+body[data-arl-chat] #conversations-central-panel-viewer :is(.date-separator,[class*=date-separator],[class*=day-divider],.sticky-date) :is(span,div,p){background:var(--arl-foil)!important;color:#173e30!important;border-radius:999px!important;padding:3px 12px!important;font-weight:600!important;box-shadow:0 2px 6px #80682f33}
+body[data-arl-chat] #conversations-central-panel-viewer :is([class*=activity],[class*=system-message]){color:#5d6b63!important}
+body[data-arl-chat] :is(#composer-textarea,[id^=composer-input-]){background:#fffdf8!important;border-radius:14px!important}
+body[data-arl-chat] #conversations-central-panel-viewer :has(>#composer-textarea),body[data-arl-chat] #conversations-central-panel-viewer :has(>[id^=composer-input-]){border-color:#c9a22799!important;border-radius:16px!important;background:#fffdf8!important}
+#ari-join{background:linear-gradient(135deg,#fffaee,#f6ecd6)!important;border-color:#c9a227!important}
+body[data-arl-open]:not([data-arl-list]):not([data-arl-info]) #conversations-central-panel-viewer :is(.conversation-panel,[class*=messages-list],[class*=message-list]){padding-bottom:calc(var(--arl-join-h,42px) + 22px)!important;scroll-padding-bottom:calc(var(--arl-join-h,42px) + 22px)}
