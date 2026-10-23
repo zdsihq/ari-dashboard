@@ -1,4 +1,4 @@
-/* Ari phone-lite v3.36: opens on list, menu drawer, pills in GHL top menu, fixed Join pill, Lilah signature */
+/* Ari phone-lite v3.40: opens on list, menu drawer, pills in GHL top menu, fixed Join pill, Lilah signature */
 try{!function(w,d){if(w.__ariLite)return;w.__ariLite=1;
 function onChat(){return/\/conversations\/conversations/.test(location.pathname)}
 /* opens on All, once per load, stops on user tap */
@@ -32,4 +32,25 @@ var path="";function route(){try{if(location.pathname===path&&(!onChat()||mo&&d.
 function vh(){try{var v=w.visualViewport,h=v?Math.round(v.height):w.innerHeight;d.documentElement.style.setProperty("--arl-vh",h+"px")}catch(x){}}vh();w.visualViewport&&w.visualViewport.addEventListener("resize",vh);
 setInterval(function(){if(!d.hidden)route()},1000);route();
 }(window,document)}catch(x){try{console.warn("ari lite",x)}catch(y){}}
-try{!function(t,e){var a="__ariSig";if(!t[a]){var n={"8otTGBxdVFDsQ1gNhDg0":"Lilah✨"};e.addEventListener("pointerdown",function(t){if(i()&&function e(t){var e=t&&t.closest&&t.closest('button,[role="button"]');if(!e||e.closest("#ari-join"))return null;var a=((e.getAttribute("aria-label")||"")+" "+(e.id||"")+" "+(e.className||"")+" "+(e.textContent||"")).toLowerCase();return/\bsend\b|send-?btn|send-?message/.test(a)&&!/schedul|later/.test(a)?e:null}(t.target))try{l()}catch(t){}},!0),e.addEventListener("keydown",function(t){if("Enter"===t.key&&(t.ctrlKey||t.metaKey)&&i())try{l()}catch(t){}},!0),t[a]={version:"tkb2",label:o}}function r(){var t=location.pathname.match(/\/location\/([^\/]+)\//);return t?t[1]:""}function i(){var t=e.getElementById("ari-join");return!(!t||"true"!==t.dataset.p||!/\/conversations\/conversations/.test(location.pathname))}function o(){if(n[r()])return n[r()];var t=(e.body.innerText||"").match(/✨\s*([^\n✨]{1,40}?)\s+has joined the chat/g);if(!t)return"";var a=t[t.length-1].match(/✨\s*(.+?)\s+has joined the chat/);return a?a[1]+"✨":""}function l(){var a=o();if(a){var n=function r(){for(var t=e.querySelectorAll('textarea, [contenteditable="true"]'),a=t.length-1;a>=0;a--){var n=t[a];if(n.offsetParent&&!n.closest("#ari-join"))return n}return null}();if(n){var i="TEXTAREA"===n.tagName?n.value:n.innerText;if(i&&i.trim()){var l=i.replace(/\s+$/,"");if(l.slice(-a.length)!==a){var s=l+"\n"+a;if("TEXTAREA"===n.tagName)Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,"value").set.call(n,s);else{n.focus();var c=t.getSelection(),u=e.createRange();u.selectNodeContents(n),u.collapse(!1),c.removeAllRanges(),c.addRange(u),e.execCommand("insertText",!1,"\n"+a)}n.dispatchEvent(new Event("input",{bubbles:!0}))}}}}}}(window,document)}catch(t){console.warn("ari block 57",t)}
+try{!function(w,d){var K="__ariSig";if(w[K])return;var M={"8otTGBxdVFDsQ1gNhDg0":"Lilah✨"};
+function loc(){var m=location.pathname.match(/\/location\/([^\/]+)\//);return m?m[1]:""}
+function on(){var j=d.getElementById("ari-join");return!(!j||"true"!==j.dataset.p||!/\/conversations\/conversations/.test(location.pathname))}
+function label(){if(M[loc()])return M[loc()];var t=(d.body.innerText||"").match(/✨\s*([^\n✨]{1,40}?)\s+has joined the chat/g);if(!t)return"";var a=t[t.length-1].match(/✨\s*(.+?)\s+has joined the chat/);return a?a[1]+"✨":""}
+function vis(n){return n&&n.offsetParent&&!n.closest("#ari-join")&&!n.closest("#record-details-lhs,[data-ari-notes],.ari-notes")}
+function isSend(t){var e=t&&t.closest&&t.closest('button,[role="button"]');if(!e||e.closest("#ari-join"))return null;var a=((e.getAttribute("aria-label")||"")+" "+(e.id||"")+" "+(e.className||"")+" "+(e.textContent||"")).toLowerCase();return/\bsend\b|send-?btn|send-?message/.test(a)&&!/schedul|later/.test(a)?e:null}
+var F='textarea,[contenteditable="true"],input[id^="composer-input"]';
+function scope(n){return n&&n.closest&&n.closest("#conversations-central-panel-viewer,#conversations-messages,[data-ari-composer],[data-ari-composer-bar]")}
+function field(n){return vis(n)&&!n.closest("#conversations-right-column,#record-details-lhs")&&!!scope(n)}
+function composer(from){var c=d.getElementById("composer-textarea");if(c){var x=c.matches(F)?c:c.querySelector(F);if(field(x))return x}
+var root=from&&(from.closest("#conversations-central-panel-viewer")||from.closest("#conversations-messages"));
+var fb=null;for(var p=from&&from.parentElement;p&&p!==d.body;p=p.parentElement){var q=p.querySelectorAll(F);for(var i=q.length-1;i>=0;i--)if(field(q[i])){if("INPUT"!==q[i].tagName)return q[i];fb=fb||q[i]}if(p===root)break}return fb}
+function txt(n){return"TEXTAREA"===n.tagName||"INPUT"===n.tagName?n.value:n.innerText}
+function put(n,v){Object.getOwnPropertyDescriptor(("INPUT"===n.tagName?HTMLInputElement:HTMLTextAreaElement).prototype,"value").set.call(n,v);n.dispatchEvent(new Event("input",{bubbles:!0}))}
+function sign(from,n){var a=label();if(!a)return null;n=n||composer(from);if(!n)return null;var v=txt(n);if(!v||!v.trim())return null;var s=v.replace(/\s+$/,"");if(s.slice(-a.length)===a)return null;
+if("TEXTAREA"===n.tagName)put(n,s+"\n"+a);else if("INPUT"===n.tagName)put(n,s+" "+a);else{n.focus();var g=w.getSelection(),r=d.createRange();r.selectNodeContents(n),r.collapse(!1),g.removeAllRanges(),g.addRange(r),d.execCommand("insertText",!1,"\n"+a);n.dispatchEvent(new Event("input",{bubbles:!0}))}return{n:n,a:a,v:v}}
+function btn(ev){if(!on())return;var b=isSend(ev.target);if(b)try{sign(b)}catch(x){}}
+d.addEventListener("pointerdown",btn,!0);d.addEventListener("mousedown",btn,!0);d.addEventListener("click",btn,!0);
+d.addEventListener("keydown",function(ev){if("Enter"!==ev.key&&" "!==ev.key||!on()||ev.isComposing)return;try{
+var b=isSend(ev.target);if(b)return void sign(b);if("Enter"!==ev.key||ev.shiftKey||ev.altKey)return;var n=ev.target&&ev.target.closest&&ev.target.closest(F);if(!n||!field(n))return;
+var r=sign(n,n);if(r&&!(ev.ctrlKey||ev.metaKey)){/* plain Enter: undo if GHL did not send (Enter was a new line) */w.setTimeout(function(){try{var now=txt(r.n);if(now&&now.trim()&&now.indexOf("\n"+r.a)>=0&&"TEXTAREA"===r.n.tagName){put(r.n,now.replace("\n"+r.a,""))}}catch(x){}},350)}}catch(x){}},!0);
+w[K]={version:"v40",label:label}}(window,document)}catch(t){console.warn("ari sig",t)}
