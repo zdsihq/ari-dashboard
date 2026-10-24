@@ -19,3 +19,4 @@ No secrets or client data live in this repo.
 - v3.103: phone typing box taller; gold border wraps text box + icon row so send circle sits inside bottom right (collapsed and tapped); marker v103
 - v3.104: tapped phone typing box fills its parent (no 100vw-24px width), fixes composer pushed below screen; marker v104
 - v3.105: isolate test variant on v3.101 css (not for live)
+- v3.106: isolate test variant on v3.101 css (not for live)
