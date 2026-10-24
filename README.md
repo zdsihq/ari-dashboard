@@ -17,3 +17,4 @@ No secrets or client data live in this repo.
 - v3.50: box head now carries an inline gold style for the Contact Details avatar (.hr-avatar) so it is gold from first paint; JS marker v50; CSS unchanged
 - v3.51: phone Ari Chats: GHL inbox icon rail hidden (inbox tools path check no longer depends on stored location id; CSS fallback scoped to html[data-ari-noz]); composer stays one full-width line when expanded; chat header sparkle removed; marker v51
 - v3.103: phone typing box taller; gold border wraps text box + icon row so send circle sits inside bottom right (collapsed and tapped); marker v103
+- v3.104: tapped phone typing box fills its parent (no 100vw-24px width), fixes composer pushed below screen; marker v104
