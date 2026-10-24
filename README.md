@@ -27,3 +27,6 @@ v3.101 css + v3.105 collapsed rules + v3.107 icon-row padding + tapped textarea 
 
 ## v3.109
 v3.101 css + v3.105 and v3.107 rule lines only, no tapped-textarea gold rule.
+
+## v3.110
+v3.109 + tapped-box ::before gold overlay (1px, 22px radius, pointer-events none, full gold on focus-within); inner composer outlines set transparent (color only).
