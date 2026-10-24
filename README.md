@@ -24,3 +24,6 @@ No secrets or client data live in this repo.
 
 ## v3.108
 v3.101 css + v3.105 collapsed rules + v3.107 icon-row padding + tapped textarea paint-only gold look (radius, background, inset shadow).
+
+## v3.109
+v3.101 css + v3.105 and v3.107 rule lines only, no tapped-textarea gold rule.
