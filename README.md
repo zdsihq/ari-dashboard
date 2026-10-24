@@ -20,3 +20,4 @@ No secrets or client data live in this repo.
 - v3.104: tapped phone typing box fills its parent (no 100vw-24px width), fixes composer pushed below screen; marker v104
 - v3.105: isolate test variant on v3.101 css (not for live)
 - v3.106: isolate test variant on v3.101 css (not for live)
+- v3.107: isolate test variant on v3.101 css (not for live)
