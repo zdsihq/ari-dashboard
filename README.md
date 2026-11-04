@@ -33,3 +33,6 @@ v3.109 + tapped-box ::before gold overlay (1px, 22px radius, pointer-events none
 
 ## v3.111
 Multi-tenant: `window.__ARI_LOCS` allowlist (set in the agency JS loader; unset keeps any-location behaviour). Customers all-list and dash-fix use the current location instead of a hardcoded location id. CSS unchanged from v3.110.
+
+## v3.112
+Alerts empty state: Notification Drawer `.blank-list` fills the pane (ivory background, centered “All quiet for now”). JS is v3.111 with the version marker bumped to v3.112.
