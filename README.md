@@ -30,3 +30,6 @@ v3.101 css + v3.105 and v3.107 rule lines only, no tapped-textarea gold rule.
 
 ## v3.110
 v3.109 + tapped-box ::before gold overlay (1px, 22px radius, pointer-events none, full gold on focus-within); inner composer outlines set transparent (color only).
+
+## v3.111
+Multi-tenant: `window.__ARI_LOCS` allowlist (set in the agency JS loader; unset keeps any-location behaviour). Customers all-list and dash-fix use the current location instead of a hardcoded location id. CSS unchanged from v3.110.
