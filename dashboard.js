@@ -1,4 +1,4 @@
-/* ari-dashboard v3.112 (Nov 4 2026): window.__ARI_LOCS allowlist (set in agency JS loader; unset = old any-loc behaviour); Customers all-list + dash-fix use current loc */
+/* ari-dashboard v3.113 (Nov 4 2026): CSS-only Alerts empty fill-height; v3.112: window.__ARI_LOCS allowlist (set in agency JS loader; unset = old any-loc behaviour); Customers all-list + dash-fix use current loc */
 /* v3.77 phone Ari Chats: user-scroll tracker (no auto scroll while touching, wheeling, scrolling up or in momentum; 600ms idle) */!function(w,d){try{if(w.__ariBusy)return;var down=0,last=0,y={};function mark(){last=Date.now()}
 d.addEventListener("touchstart",function(){down=1;mark()},{capture:!0,passive:!0});d.addEventListener("touchmove",mark,{capture:!0,passive:!0});
 d.addEventListener("touchend",function(){down=0;mark()},{capture:!0,passive:!0});d.addEventListener("touchcancel",function(){down=0;mark()},{capture:!0,passive:!0});

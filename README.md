@@ -36,3 +36,6 @@ Multi-tenant: `window.__ARI_LOCS` allowlist (set in the agency JS loader; unset 
 
 ## v3.112
 Alerts empty state: Notification Drawer `.blank-list` fills the pane (ivory background, centered “All quiet for now”). JS is v3.111 with the version marker bumped to v3.112.
+
+## v3.113
+Alerts empty state: fill height only. Stock emoji and copy kept. v3.112 `.blank-list` rules removed. JS is v3.112 with the version marker bumped to v3.113.
