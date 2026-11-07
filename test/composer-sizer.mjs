@@ -55,6 +55,7 @@ if (!shotMode) {
     assert.equal(sizer.includes("preventDefault"), false);
     assert.equal(sizer.includes("defineProperty(w.HTMLTextAreaElement.prototype"), false);
     assert.equal(sizer.includes("live=0"), true);
+    assert.equal(sizer.includes("live++"), false);
     assert.equal(sizer.includes("new H.MO"), true);
     assert.equal(sizer.includes("__ariComposerSize"), true);
     const sums = fs.readFileSync(path.join(root, "MD5SUMS"), "utf8");
@@ -171,9 +172,12 @@ window.__silentClear=function(){
   field().value="";
   return window.__box();
 };
+function protoSet(el,text){
+  Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,"value").set.call(el,text);
+}
 window.__postSend=function(){
   document.getElementById("conv-send-button-simple").click();
-  field().value="";
+  protoSet(field(),"");
   return window.__box();
 };
 window.__remount=function(){
@@ -194,10 +198,95 @@ window.__leave=function(){
 };
 window.__focus=function(){field().focus();return window.__box()};
 window.__setValue=function(text){field().value=text;return window.__box()};
-document.getElementById("quick-reply").addEventListener("click",function(){field().value="Quick reply line\\nQuick reply line\\nQuick reply line\\nQuick reply line"});
-document.getElementById("template-insert").addEventListener("click",function(){field().value="Template line\\nTemplate line\\nTemplate line\\nTemplate line"});
-document.querySelector("[data-conversation-id]").addEventListener("click",function(){field().value=""});
-window.__enterClear=function(){var el=field();var ev=new KeyboardEvent("keydown",{key:"Enter",bubbles:true,cancelable:true});el.dispatchEvent(ev);el.value="";return {prevented:ev.defaultPrevented,enters:window.__enters}};
+document.getElementById("quick-reply").addEventListener("click",function(){protoSet(field(),"Quick reply line\\nQuick reply line\\nQuick reply line\\nQuick reply line")});
+document.getElementById("template-insert").addEventListener("click",function(){protoSet(field(),"Template line\\nTemplate line\\nTemplate line\\nTemplate line")});
+document.querySelector("[data-conversation-id]").addEventListener("click",function(){protoSet(field(),"")});
+window.__enterClear=function(){var el=field();var ev=new KeyboardEvent("keydown",{key:"Enter",bubbles:true,cancelable:true});el.dispatchEvent(ev);protoSet(el,"");return {prevented:ev.defaultPrevented,enters:window.__enters}};
+window.__armStop=function(){
+  var sizer=window.__ariComposerSize;
+  sizer.stop();
+  window.__fontPending=new Promise(function(r){window.__fontRelease=r});
+  window.__fontsHooked=false;
+  try{
+    Object.defineProperty(document,"fonts",{configurable:true,get:function(){return{ready:window.__fontPending}}});
+    window.__fontsHooked=true;
+  }catch(e){window.__fontsHooked=String(e&&e.message||e)}
+  sizer.start();
+  var el=field();
+  protoSet(el,"Synthetic line\\n".repeat(4));
+  el.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true,cancelable:true}));
+  el.dispatchEvent(new Event("input",{bubbles:true}));
+  el.style.setProperty("outline","1px solid transparent");
+  sizer.resetWrites();
+  window.__capturedSync=sizer.sync;
+  sizer.stop();
+  return {
+    fontsHooked:window.__fontsHooked,
+    running:sizer.running(),
+    writes:sizer.writes(),
+    obs:window.__ariH.stats().observers,
+    mirror:document.querySelectorAll("[data-ari-composer-mirror]").length,
+    mark:el.hasAttribute("data-ari-sized"),
+    inline:el.style.height,
+    own:Object.getOwnPropertyDescriptor(el,"value")?1:0,
+    sizer:document.documentElement.getAttribute("data-ari-composer-sizer")
+  };
+};
+window.__releaseStop=function(){
+  if(window.__fontRelease)window.__fontRelease();
+  window.__capturedSync();
+  var el=field();
+  protoSet(el,"Late line\\nLate line\\nLate line\\nLate line");
+  el.style.setProperty("letter-spacing","0.2px");
+  el.dispatchEvent(new Event("input",{bubbles:true}));
+  el.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true,cancelable:true}));
+  document.querySelector("[data-conversation-id]").click();
+  return 1;
+};
+window.__readStop=function(){
+  var el=field();
+  var sizer=window.__ariComposerSize;
+  return {
+    writes:sizer.writes(),
+    running:sizer.running(),
+    obs:window.__ariH.stats().observers,
+    mirror:document.querySelectorAll("[data-ari-composer-mirror]").length,
+    mark:el.hasAttribute("data-ari-sized"),
+    inline:el.style.height,
+    sizer:document.documentElement.getAttribute("data-ari-composer-sizer"),
+    own:Object.getOwnPropertyDescriptor(el,"value")?1:0
+  };
+};
+window.__restartTwice=function(){
+  var sizer=window.__ariComposerSize;
+  sizer.start();
+  var once=window.__ariH.stats().observers;
+  sizer.start();
+  return {once:once,twice:window.__ariH.stats().observers,running:sizer.running(),listeners:1};
+};
+window.__stopTwice=function(){
+  var sizer=window.__ariComposerSize;
+  sizer.stop();
+  sizer.stop();
+  window.__capturedSync();
+  return 1;
+};
+window.__ownedDescriptor=function(){
+  var el=field();
+  var sizer=window.__ariComposerSize;
+  sizer.stop();
+  var proto=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,"value");
+  var n=0;
+  Object.defineProperty(el,"value",{configurable:true,enumerable:false,get:function(){return proto.get.call(this)},set:function(v){n++;return proto.set.call(this,v)}});
+  sizer.resetWrites();
+  sizer.start();
+  el.value="owned line\\nowned line\\nowned line\\nowned line";
+  var mid=n;
+  sizer.stop();
+  sizer.resetWrites();
+  el.value="again";
+  return {mid:mid,after:n,writes:sizer.writes(),own:Object.getOwnPropertyDescriptor(el,"value")?1:0,running:sizer.running(),obs:window.__ariH.stats().observers,mirror:document.querySelectorAll("[data-ari-composer-mirror]").length};
+};
 window.__quick=function(){document.getElementById("quick-reply").click();return window.__box()};
 window.__template=function(){document.getElementById("template-insert").click();return window.__box()};
 window.__switch=function(){document.querySelector("[data-conversation-id]").click();return window.__box()};
@@ -609,30 +698,48 @@ if (!shotMode) {
   test("nothing runs after stop", async () => {
     const session = await openChrome(fixture({ noz: false }), 1280, 900);
     try {
-      await session.evalJson("JSON.stringify(window.__type('Synthetic line'))");
-      await new Promise((r) => setTimeout(r, 120));
-      const before = await session.evalJson("JSON.stringify({writes:window.__ariComposerSize.writes(),obs:window.__ariH.stats().observers})");
-      await session.evalJson("JSON.stringify((window.__capturedSync=window.__ariComposerSize.sync, window.__ariComposerSize.resetWrites(), window.__ghl(120), window.__ariComposerSize.stop(), window.__capturedSync(), 1))");
-      await new Promise((r) => setTimeout(r, 400));
-      const stopped = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),writes:window.__ariComposerSize.writes(),sizer:document.documentElement.getAttribute('data-ari-composer-sizer'),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,mark:document.getElementById('conv-composer-textarea-input').hasAttribute('data-ari-sized'),obs:window.__ariH.stats().observers})");
-      assert.equal(stopped.running, false);
-      assert.equal(stopped.writes, 0);
-      assert.equal(stopped.sizer, null);
-      assert.equal(stopped.mirror, 0);
-      assert.equal(stopped.mark, false);
-      assert.ok(stopped.obs < before.obs);
-      await session.evalJson("JSON.stringify((window.__ariComposerSize.start(), window.__ariComposerSize.start(), 1))");
-      const restarted = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),obs:window.__ariH.stats().observers,sizer:document.documentElement.getAttribute('data-ari-composer-sizer')})");
+      await session.send("Emulation.setDeviceMetricsOverride", { width: 400, height: 800, deviceScaleFactor: 1, mobile: true });
+      const armed = await session.evalJson("JSON.stringify(window.__armStop())");
+      assert.equal(armed.fontsHooked, true);
+      assert.equal(armed.running, false);
+      assert.equal(armed.writes, 0);
+      assert.equal(armed.obs, 0);
+      assert.equal(armed.mirror, 0);
+      assert.equal(armed.mark, false);
+      assert.equal(armed.own, 0);
+      assert.equal(armed.sizer, null);
+      await session.evalJson("JSON.stringify(window.__releaseStop())");
+      await new Promise((r) => setTimeout(r, 700));
+      const late = await session.evalJson("JSON.stringify(window.__readStop())");
+      assert.equal(late.writes, 0);
+      assert.equal(late.running, false);
+      assert.equal(late.obs, 0);
+      assert.equal(late.mirror, 0);
+      assert.equal(late.mark, false);
+      assert.equal(late.own, 0);
+      assert.equal(late.sizer, null);
+      assert.equal(late.inline, armed.inline);
+      const restarted = await session.evalJson("JSON.stringify(window.__restartTwice())");
       assert.equal(restarted.running, true);
-      assert.equal(restarted.sizer, "v1");
-      assert.equal(restarted.obs, before.obs);
-      await session.evalJson("JSON.stringify((window.__ariComposerSize.stop(), window.__ariComposerSize.stop(), window.__capturedSync(), 1))");
-      await new Promise((r) => setTimeout(r, 200));
-      const again = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,obs:window.__ariH.stats().observers,sizer:document.documentElement.getAttribute('data-ari-composer-sizer')})");
+      assert.equal(restarted.once, 2);
+      assert.equal(restarted.twice, 2);
+      await session.evalJson("JSON.stringify(window.__stopTwice())");
+      await new Promise((r) => setTimeout(r, 300));
+      const again = await session.evalJson("JSON.stringify(window.__readStop())");
       assert.equal(again.running, false);
+      assert.equal(again.writes, 0);
+      assert.equal(again.obs, 0);
       assert.equal(again.mirror, 0);
+      assert.equal(again.mark, false);
       assert.equal(again.sizer, null);
-      assert.ok(again.obs < before.obs);
+      const owned = await session.evalJson("JSON.stringify(window.__ownedDescriptor())");
+      assert.equal(owned.mid, 1);
+      assert.equal(owned.after, 2);
+      assert.equal(owned.writes, 0);
+      assert.equal(owned.own, 1);
+      assert.equal(owned.running, false);
+      assert.equal(owned.obs, 0);
+      assert.equal(owned.mirror, 0);
     } finally {
       session.close();
     }
