@@ -120,6 +120,21 @@ window.__value=function(text){
   el.value=text;
   return window.__box();
 };
+window.__paste=function(text){
+  const el=document.getElementById("conv-composer-textarea-input");
+  el.style.removeProperty("height");
+  const before=getComputedStyle(el).height;
+  el.focus();
+  el.value=text;
+  el.dispatchEvent(new InputEvent("beforeinput",{bubbles:true,cancelable:true,inputType:"insertFromPaste",data:text}));
+  el.dispatchEvent(new Event("input",{bubbles:true}));
+  el.dispatchEvent(new Event("paste",{bubbles:true}));
+  const box=window.__box();
+  box.pasteBefore=before;
+  box.pasteAfter=getComputedStyle(el).height;
+  box.valueLen=el.value.length;
+  return box;
+};
 window.__route=function(on){
   const root=document.documentElement;
   if(on){
@@ -241,8 +256,11 @@ if (!shotMode) {
       const shrunk = await desktop.evalJson("JSON.stringify(window.__setH(8))");
       assert.equal(px(shrunk.height), 42);
       const pasted = await desktop.evalJson(
-        'JSON.stringify(window.__value(' + JSON.stringify("Synthetic line\n".repeat(12)) + '))'
+        "JSON.stringify(window.__paste(" + JSON.stringify("Synthetic line\n".repeat(12)) + "))"
       );
+      assert.ok(pasted.valueLen > 40, "paste text did not land in the fictional field");
+      assert.equal(px(pasted.pasteBefore), px(pasted.pasteAfter), "paste/input events are not a grower");
+      assert.ok(px(pasted.pasteAfter) < 132);
       assert.equal(pasted.overflowY, "auto");
       assert.equal(px(pasted.maxH), 132);
       assert.equal(pasted.focused, true);
