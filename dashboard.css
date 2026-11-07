@@ -570,3 +570,7 @@ html[data-ari-soft] [aria-label="Notification Drawer"] #notification_drawer-cont
   }
 }
 /* END desktop-agenda-ivory */
+/* BEGIN ari-chats-scroll-layer */
+/* Ari Chats only. The luxe canvas paints a viewport-attached photo on #app underneath the messages wrapper. The wrapper already paints the visible photo and covers #app, so this turns that under-layer off. Wrapper photo, gradient, size, and position stay. No pseudo-element is added. */
+html[data-ari-soft=v1][data-ari-luxe=v1][data-ari-lx-canvas=all][data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-ari-messages-layout=v2] #app{background:transparent!important;background-image:none!important;background-attachment:scroll!important}
+/* END ari-chats-scroll-layer */
