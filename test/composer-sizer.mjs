@@ -52,7 +52,9 @@ if (!shotMode) {
     const sizer = js.slice(js.lastIndexOf("composer content sizer"));
     assert.equal(sizer.includes("new MutationObserver("), false);
     assert.equal(sizer.includes("new ResizeObserver("), false);
-    assert.equal(sizer.includes("keydown"), false);
+    assert.equal(sizer.includes("preventDefault"), false);
+    assert.equal(sizer.includes("defineProperty(w.HTMLTextAreaElement.prototype"), false);
+    assert.equal(sizer.includes("live=0"), true);
     assert.equal(sizer.includes("new H.MO"), true);
     assert.equal(sizer.includes("__ariComposerSize"), true);
     const sums = fs.readFileSync(path.join(root, "MD5SUMS"), "utf8");
@@ -86,12 +88,13 @@ function fixture({ noz = false, script = true } = {}) {
 <body data-ari-shell="v1" data-ari-messages-layout="v2" data-ari-msg7="v1">
 <div id="banner">SYNTHETIC FIXTURE — not live GHL — inline height is simulated, Send is not transmitted</div>
 <div id="app">
-  <div id="conversations-layout">
+    <div id="conversations-layout">
+    <div id="conversations-list"><button type="button" data-conversation-id="synthetic-a">Sample A</button></div>
     <div id="conversations-central-panel-viewer">
       <div data-ari-composer>
         <div id="composer-textarea">
           <div><textarea id="conv-composer-textarea-input" rows="1" placeholder="Synthetic note"></textarea></div>
-          <div id="conv-composer-footer"><button id="conv-send-button-simple" type="button">Send</button></div>
+          <div id="conv-composer-footer"><button id="quick-reply" type="button">Quick</button><button id="template-insert" type="button">Template</button><button id="conv-send-button-simple" type="button">Send</button></div>
         </div>
       </div>
     </div>
@@ -190,6 +193,14 @@ window.__leave=function(){
   return window.__box();
 };
 window.__focus=function(){field().focus();return window.__box()};
+window.__setValue=function(text){field().value=text;return window.__box()};
+document.getElementById("quick-reply").addEventListener("click",function(){field().value="Quick reply line\\nQuick reply line\\nQuick reply line\\nQuick reply line"});
+document.getElementById("template-insert").addEventListener("click",function(){field().value="Template line\\nTemplate line\\nTemplate line\\nTemplate line"});
+document.querySelector("[data-conversation-id]").addEventListener("click",function(){field().value=""});
+window.__enterClear=function(){var el=field();var ev=new KeyboardEvent("keydown",{key:"Enter",bubbles:true,cancelable:true});el.dispatchEvent(ev);el.value="";return {prevented:ev.defaultPrevented,enters:window.__enters}};
+window.__quick=function(){document.getElementById("quick-reply").click();return window.__box()};
+window.__template=function(){document.getElementById("template-insert").click();return window.__box()};
+window.__switch=function(){document.querySelector("[data-conversation-id]").click();return window.__box()};
 </script></body></html>`;
 }
 
@@ -371,12 +382,6 @@ if (!shotMode) {
       assert.ok(px(short.height) < 132);
       assert.ok(px(short.height) >= 42);
       assert.equal(deleted.valueLen, 2);
-      const beforeClear = px(short.height);
-      const silent = await desktop.evalJson("JSON.stringify(window.__silentClear())");
-      await new Promise((r) => setTimeout(r, 120));
-      const still = await desktop.evalJson("JSON.stringify(window.__box())");
-      assert.equal(silent.valueLen, 0);
-      assert.equal(px(still.height), beforeClear, "bare value clear must not be treated as an input event");
       await desktop.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(3)) + "))");
       await new Promise((r) => setTimeout(r, 120));
       const posted = await desktop.evalJson("JSON.stringify(window.__postSend())");
@@ -465,11 +470,11 @@ if (!shotMode) {
       const observers = await session.evalJson("JSON.stringify(window.__ariH.stats().observers)");
       await session.evalJson("JSON.stringify((window.__ariComposerSize.stop(), 1))");
       const stopped = await session.evalJson(
-        "JSON.stringify({sizer:document.documentElement.getAttribute('data-ari-composer-sizer'),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,has:!!window.__ariComposerSize,obs:window.__ariH.stats().observers})"
+        "JSON.stringify({sizer:document.documentElement.getAttribute('data-ari-composer-sizer'),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,running:window.__ariComposerSize.running(),obs:window.__ariH.stats().observers})"
       );
       assert.equal(stopped.sizer, null);
       assert.equal(stopped.mirror, 0);
-      assert.equal(stopped.has, false);
+      assert.equal(stopped.running, false);
       assert.ok(stopped.obs < observers);
       const left = await session.evalJson("JSON.stringify(window.__leave())");
       await new Promise((r) => setTimeout(r, 150));
@@ -477,6 +482,157 @@ if (!shotMode) {
       assert.equal(after.gone, true);
       assert.equal(after.stray, "80px");
       assert.equal(left.stray, "80px");
+    } finally {
+      session.close();
+    }
+  });
+
+  test("Enter after send clears the field back to one line", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(4)) + "))");
+      await new Promise((r) => setTimeout(r, 150));
+      const grown = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(px(grown.height) > 42);
+      const sent = await session.evalJson("JSON.stringify(window.__enterClear())");
+      await new Promise((r) => setTimeout(r, 200));
+      const cleared = await session.evalJson("JSON.stringify(window.__box())");
+      assert.equal(sent.prevented, false);
+      assert.equal(cleared.enters, 1);
+      assert.equal(cleared.clicks, 0);
+      assert.equal(cleared.valueLen, 0);
+      assert.equal(px(cleared.height), 42);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("Send button after send clears the field back to one line", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(4)) + "))");
+      await new Promise((r) => setTimeout(r, 150));
+      await session.evalJson("JSON.stringify(window.__postSend())");
+      await new Promise((r) => setTimeout(r, 400));
+      const cleared = await session.evalJson("JSON.stringify(window.__box())");
+      assert.equal(cleared.clicks, 1);
+      assert.equal(cleared.enters, 0);
+      assert.equal(cleared.valueLen, 0);
+      assert.equal(px(cleared.height), 42);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("quick reply insert grows the field", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__quick())");
+      await new Promise((r) => setTimeout(r, 200));
+      const box = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(box.valueLen > 20);
+      assert.ok(px(box.height) > 42);
+      assert.equal(box.clicks, 0);
+      assert.equal(box.enters, 0);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("template insert grows the field", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      const before = await session.evalJson("JSON.stringify(window.__box())");
+      await session.evalJson("JSON.stringify(window.__template())");
+      await new Promise((r) => setTimeout(r, 200));
+      const box = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(box.valueLen > before.valueLen);
+      assert.ok(px(box.height) > px(before.height));
+      assert.ok(px(box.height) <= 132);
+      assert.equal(box.enters, 0);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("conversation switch resets the field to one line", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(4)) + "))");
+      await new Promise((r) => setTimeout(r, 150));
+      const grown = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(px(grown.height) > 42);
+      await session.evalJson("JSON.stringify(window.__switch())");
+      await new Promise((r) => setTimeout(r, 200));
+      const cleared = await session.evalJson("JSON.stringify(window.__box())");
+      assert.equal(cleared.valueLen, 0);
+      assert.equal(px(cleared.height), 42);
+      assert.equal(cleared.clicks, 0);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("remount keeps sizing the replacement field", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__remount())");
+      await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(4)) + "))");
+      await new Promise((r) => setTimeout(r, 200));
+      const box = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(px(box.height) > 42);
+      assert.ok(px(box.height) <= 132);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("bare programmatic clear with no event shrinks to one line", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(4)) + "))");
+      await new Promise((r) => setTimeout(r, 150));
+      const grown = await session.evalJson("JSON.stringify(window.__box())");
+      assert.ok(px(grown.height) > 42);
+      const cleared = await session.evalJson("JSON.stringify(window.__setValue(''))");
+      await new Promise((r) => setTimeout(r, 200));
+      const after = await session.evalJson("JSON.stringify(window.__box())");
+      assert.equal(cleared.clicks, 0);
+      assert.equal(after.enters, 0);
+      assert.equal(after.valueLen, 0);
+      assert.equal(px(after.height), 42);
+    } finally {
+      session.close();
+    }
+  });
+
+  test("nothing runs after stop", async () => {
+    const session = await openChrome(fixture({ noz: false }), 1280, 900);
+    try {
+      await session.evalJson("JSON.stringify(window.__type('Synthetic line'))");
+      await new Promise((r) => setTimeout(r, 120));
+      const before = await session.evalJson("JSON.stringify({writes:window.__ariComposerSize.writes(),obs:window.__ariH.stats().observers})");
+      await session.evalJson("JSON.stringify((window.__capturedSync=window.__ariComposerSize.sync, window.__ariComposerSize.resetWrites(), window.__ghl(120), window.__ariComposerSize.stop(), window.__capturedSync(), 1))");
+      await new Promise((r) => setTimeout(r, 400));
+      const stopped = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),writes:window.__ariComposerSize.writes(),sizer:document.documentElement.getAttribute('data-ari-composer-sizer'),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,mark:document.getElementById('conv-composer-textarea-input').hasAttribute('data-ari-sized'),obs:window.__ariH.stats().observers})");
+      assert.equal(stopped.running, false);
+      assert.equal(stopped.writes, 0);
+      assert.equal(stopped.sizer, null);
+      assert.equal(stopped.mirror, 0);
+      assert.equal(stopped.mark, false);
+      assert.ok(stopped.obs < before.obs);
+      await session.evalJson("JSON.stringify((window.__ariComposerSize.start(), window.__ariComposerSize.start(), 1))");
+      const restarted = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),obs:window.__ariH.stats().observers,sizer:document.documentElement.getAttribute('data-ari-composer-sizer')})");
+      assert.equal(restarted.running, true);
+      assert.equal(restarted.sizer, "v1");
+      assert.equal(restarted.obs, before.obs);
+      await session.evalJson("JSON.stringify((window.__ariComposerSize.stop(), window.__ariComposerSize.stop(), window.__capturedSync(), 1))");
+      await new Promise((r) => setTimeout(r, 200));
+      const again = await session.evalJson("JSON.stringify({running:window.__ariComposerSize.running(),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,obs:window.__ariH.stats().observers,sizer:document.documentElement.getAttribute('data-ari-composer-sizer')})");
+      assert.equal(again.running, false);
+      assert.equal(again.mirror, 0);
+      assert.equal(again.sizer, null);
+      assert.ok(again.obs < before.obs);
     } finally {
       session.close();
     }
