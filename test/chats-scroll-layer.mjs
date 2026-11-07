@@ -23,7 +23,6 @@ const cssPath = path.join(root, "dashboard.css");
 const jsPath = path.join(root, "dashboard.js");
 const css = fs.readFileSync(cssPath, "utf8");
 const V3113_JS_MD5 = "180d5480bae68c5eadd7dc05e0e250a7";
-const PHOTO = "6ad2dde2989628c77a3129cd.jpg";
 const CHROME = "/opt/google/chrome/google-chrome";
 const CHATS_MARK_START = "/* BEGIN ari-chats-scroll-layer */";
 const CHATS_MARK_END = "/* END ari-chats-scroll-layer */";
@@ -31,6 +30,38 @@ const CHATS_MARK_END = "/* END ari-chats-scroll-layer */";
 function md5(file) {
   return crypto.createHash("md5").update(fs.readFileSync(file)).digest("hex");
 }
+
+function declarationsEnding(selectorEnd) {
+  const out = [];
+  let from = 0;
+  while (from < css.length) {
+    const i = css.indexOf(selectorEnd, from);
+    if (i < 0) break;
+    const open = i + selectorEnd.length;
+    if (css[open] === "{") {
+      const close = css.indexOf("}", open);
+      assert.ok(close > open, selectorEnd);
+      out.push(css.slice(open + 1, close));
+    }
+    from = open + 1;
+  }
+  return out;
+}
+
+function urlToken(decl) {
+  const m = String(decl).match(/url\(([^)]+)\)/);
+  assert.ok(m, "missing background url");
+  return m[1].replace(/^["']|["']$/g, "");
+}
+
+const appDecls = declarationsEnding("html[data-ari-soft=v1][data-ari-luxe=v1][data-ari-lx-canvas=all] body #app");
+assert.equal(appDecls.length, 1, "canvas=all #app rule count");
+const fixedAppDecl = appDecls[0];
+const fixedAppUrl = urlToken(fixedAppDecl);
+const wrapperDecls = declarationsEnding("section.hl_wrapper:has(#conversations-layout)").filter((decl) => decl.includes("url("));
+assert.equal(wrapperDecls.length, 1, "messages wrapper photo rule count");
+const wrapperDecl = wrapperDecls[0];
+const wrapperUrl = urlToken(wrapperDecl);
 
 function chatsBlock() {
   const start = css.indexOf(CHATS_MARK_START);
@@ -42,17 +73,22 @@ function chatsBlock() {
 const shotMode = process.argv[2] === "--shots";
 
 if (!shotMode) test("source keeps the old fixed #app paint and overrides it only on Ari Chats", () => {
-  const bad =
-    "html[data-ari-soft=v1][data-ari-luxe=v1][data-ari-lx-canvas=all] body #app{background:radial-gradient(70% 40% at 100% 0,#f4dcd58c,#0000 70%),radial-gradient(60% 40% at 0 100%,#cee2d080,#0000 70%),#fbf6ec url(https://assets.cdn.filesafe.space/8otTGBxdVFDsQ1gNhDg0/media/6ad2dde2989628c77a3129cd.jpg) 50%/cover no-repeat fixed!important}";
-  assert.equal(css.includes(bad), true, "pre-existing bad paint pattern missing");
-  const wrapper =
-    "section.hl_wrapper:has(#conversations-layout){background:radial-gradient(70% 40% at 100% 0,#f4dcd573,#0000 70%),#fbf6ec url(https://assets.cdn.filesafe.space/8otTGBxdVFDsQ1gNhDg0/media/6ad2dde2989628c77a3129cd.jpg) 50%/cover no-repeat!important}";
-  assert.equal(css.includes(wrapper), true, "visible messages-wrapper photo was rewritten");
+  assert.match(
+    fixedAppDecl,
+    /^background:radial-gradient\(70% 40% at 100% 0,#f4dcd58c,#0000 70%\),radial-gradient\(60% 40% at 0 100%,#cee2d080,#0000 70%\),#fbf6ec url\([^)]+\) 50%\/cover no-repeat fixed!important$/
+  );
+  assert.equal((fixedAppDecl.match(/radial-gradient\(/g) || []).length, 2);
+  assert.match(wrapperDecl, /^background:radial-gradient\(70% 40% at 100% 0,#f4dcd573,#0000 70%\),#fbf6ec url\([^)]+\) 50%\/cover no-repeat!important$/);
+  assert.equal((wrapperDecl.match(/radial-gradient\(/g) || []).length, 1);
+  assert.equal(/fixed/.test(wrapperDecl), false, "visible wrapper photo uses the fixed attachment");
+  assert.equal(wrapperUrl, fixedAppUrl, "wrapper photo diverged from the canvas photo");
+  assert.match(fixedAppUrl, /^https:\/\/[^/]+\/[^/]+\/media\/[^/]+\.jpe?g$/);
   const block = chatsBlock();
   assert.equal(block.includes("@media"), false);
   assert.equal(block.includes("::before"), false);
   assert.equal(block.includes(":before"), false);
-  assert.equal(block.includes(PHOTO), false);
+  assert.equal(block.includes("url("), false);
+  assert.equal(block.includes(fixedAppUrl), false);
   assert.equal(block.includes("fixed"), false);
   assert.match(block, /#app\{background:transparent!important;background-image:none!important;background-attachment:scroll!important\}/);
   assert.match(
@@ -138,7 +174,7 @@ window.__read=function(){
   const top0=scroller.scrollTop;
   scroller.scrollTop=180;
   const root=document.documentElement;
-  const photo=function(s){return (s||"").indexOf("${PHOTO}")!==-1};
+  const photo=function(s){return (s||"").indexOf(${JSON.stringify(fixedAppUrl)})!==-1};
   return {
     vw:innerWidth, vh:innerHeight,
     app:{image:acs.backgroundImage, attachment:acs.backgroundAttachment, size:acs.backgroundSize, position:acs.backgroundPosition, color:acs.backgroundColor, isolation:acs.isolation},
@@ -445,11 +481,17 @@ if (!shotMode) {
     const session = await openChrome(fixture({ messages: true, phone: false }), 1280, 900);
     try {
       const cleared = decodePng(await session.shot());
-      const restore = `html[data-ari-soft=v1][data-ari-luxe=v1][data-ari-lx-canvas=all][data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-ari-messages-layout=v2] #app{background:radial-gradient(70% 40% at 100% 0,#f4dcd58c,#0000 70%),radial-gradient(60% 40% at 0 100%,#cee2d080,#0000 70%),#fbf6ec url(https://assets.cdn.filesafe.space/8otTGBxdVFDsQ1gNhDg0/media/${PHOTO}) 50%/cover no-repeat fixed!important}`;
-      await session.send("Runtime.evaluate", {
-        expression: `(()=>{const s=document.createElement("style"); s.textContent=${JSON.stringify(restore)}; document.head.appendChild(s); return 1;})()`,
-        returnByValue: true,
-      });
+      const restore = `html[data-ari-soft=v1][data-ari-luxe=v1][data-ari-lx-canvas=all][data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-ari-messages-layout=v2] #app{${fixedAppDecl}}`;
+      const restored = JSON.parse(
+        (
+          await session.send("Runtime.evaluate", {
+            expression: `(()=>{const s=document.createElement("style"); s.textContent=${JSON.stringify(restore)}; document.head.appendChild(s); const cs=getComputedStyle(document.getElementById("app")); return JSON.stringify({attachment:cs.backgroundAttachment, image:cs.backgroundImage});})()`,
+            returnByValue: true,
+          })
+        ).result.value
+      );
+      assert.equal(restored.attachment.includes("fixed"), true, "restore did not put the fixed attachment back");
+      assert.equal(restored.image.includes(fixedAppUrl), true, "restore did not put the canvas photo back");
       await new Promise((r) => setTimeout(r, 80));
       const covered = decodePng(await session.shot());
       const delta = pixelDiff(cleared, covered);
@@ -478,7 +520,18 @@ async function writeShots(outDir, label) {
       fs.writeFileSync(path.join(outDir, name), buf);
       fs.writeFileSync(
         path.join(outDir, `synthetic_not_live_ghl_chats_${label}_${width}x${height}.json`),
-        JSON.stringify({ label, width, height, phone, note: "synthetic fixture, not live GHL", paint: data }, null, 2)
+        JSON.stringify(
+          {
+            label,
+            width,
+            height,
+            phone,
+            note: "synthetic fixture, not live GHL",
+            paint: JSON.parse(JSON.stringify(data).replace(/https:\/\/[^"\\)\s]+/g, "https://redacted")),
+          },
+          null,
+          2
+        )
       );
       console.log(name, data.app.attachment, data.wrapPhoto, data.hit, data.overflow);
     } finally {
