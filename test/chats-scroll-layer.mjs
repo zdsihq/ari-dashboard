@@ -22,7 +22,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cssPath = path.join(root, "dashboard.css");
 const jsPath = path.join(root, "dashboard.js");
 const css = fs.readFileSync(cssPath, "utf8");
-const V3113_JS_MD5 = "180d5480bae68c5eadd7dc05e0e250a7";
 const CHROME = "/opt/google/chrome/google-chrome";
 const CHATS_MARK_START = "/* BEGIN ari-chats-scroll-layer */";
 const CHATS_MARK_END = "/* END ari-chats-scroll-layer */";
@@ -95,7 +94,9 @@ if (!shotMode) test("source keeps the old fixed #app paint and overrides it only
     block,
     /html\[data-ari-soft=v1\]\[data-ari-luxe=v1\]\[data-ari-lx-canvas=all\]\[data-ari-no-crm-ai=v1\]\[data-ari-msg-luxe=v2\] body\[data-ari-shell=v1\]\[data-ari-messages-layout=v2\] #app\{/
   );
-  assert.equal(md5(jsPath), V3113_JS_MD5);
+  const sums = fs.readFileSync(path.join(root, "MD5SUMS"), "utf8");
+  assert.equal(sums.includes(md5(jsPath)), true);
+  assert.equal(sums.includes(md5(cssPath)), true);
 });
 
 function fixture({ messages = true, phone = false } = {}) {

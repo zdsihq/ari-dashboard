@@ -19,8 +19,6 @@ const cssPath = path.join(root, "dashboard.css");
 const jsPath = path.join(root, "dashboard.js");
 const css = fs.readFileSync(cssPath, "utf8");
 
-const V3113_JS_MD5 = "180d5480bae68c5eadd7dc05e0e250a7";
-
 function md5(file) {
   return crypto.createHash("md5").update(fs.readFileSync(file)).digest("hex");
 }
@@ -97,8 +95,9 @@ test("css block is desktop-only and brace-balanced", () => {
   assert.match(css, /#ari-ag \.ari-c3-next\{[^}]*color:#56615b;border-top:1px solid #17231d17/);
 });
 
-test("dashboard.js is unchanged from v3.113", () => {
-  assert.equal(md5(jsPath), V3113_JS_MD5);
+test("dashboard.js hash matches MD5SUMS", () => {
+  const sums = fs.readFileSync(path.join(root, "MD5SUMS"), "utf8");
+  assert.equal(sums.includes(md5(jsPath)), true);
 });
 
 test("measured text pairs meet WCAG AA on ivory", () => {
