@@ -368,7 +368,7 @@ test("build marker matches the file stamp", async () => {
     const stamp = stampOf(js);
     const seen = await session.page.evaluate(() => document.documentElement.getAttribute("data-ari-build"));
     assert.equal(seen, stamp.expect);
-    assert.equal(seen, "s-c8014029763f");
+    assert.equal(seen, "s-9a5975321ccb");
   } finally {
     await session.close();
   }
@@ -473,7 +473,7 @@ test("empty phone box stays one line across frames", async () => {
       };
       requestAnimationFrame(step);
     }));
-    assert.equal(frames[0].rows, 1);
+    assert.equal(frames[0].rows, 2);
     for (const frame of frames) {
       assert.equal(frame.h, frames[0].h);
       assert.equal(frame.top, frames[0].top);
@@ -518,27 +518,115 @@ test("single line typing keeps height and on-screen position", async () => {
     }
     assert.equal(frames.at(-1).val, "Sample");
     assert.ok(base.h <= 48);
+    const selected = await session.page.evaluate(() => new Promise((resolve) => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      el.setSelectionRange(1, 4);
+      const out = [];
+      let i = 0;
+      const step = () => {
+        const r = el.getBoundingClientRect();
+        out.push({ h: Math.round(r.height), top: Math.round(r.top), bot: Math.round(r.bottom) });
+        if (++i < 4) requestAnimationFrame(step);
+        else resolve(out);
+      };
+      requestAnimationFrame(step);
+    }));
+    for (const frame of selected) {
+      assert.equal(frame.h, base.h);
+      assert.equal(frame.top, base.top);
+      assert.equal(frame.bot, base.bot);
+    }
   } finally {
     await session.close();
   }
 });
 
-test("several lines still grow inside the phone cap", async () => {
+test("many lines scroll inside the phone box and do not grow it", async () => {
   const session = await openComposer();
   try {
     const grown = await session.page.evaluate(() => new Promise((resolve) => {
       const el = document.getElementById("conv-composer-textarea-input");
+      const before = Math.round(el.getBoundingClientRect().height);
+      el.focus();
+      el.value = "One\nTwo\nThree\nFour\nFive\nSix";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.style.height = "120px";
+      setTimeout(() => {
+        const r = el.getBoundingClientRect();
+        el.scrollTop = el.scrollHeight;
+        resolve({
+          before,
+          h: Math.round(r.height),
+          top: Math.round(r.top),
+          bot: Math.round(r.bottom),
+          sh: el.scrollHeight,
+          ch: el.clientHeight,
+          scroll: el.scrollTop,
+          writes: window.__ariComposerSize.writes(),
+          mirror: document.querySelectorAll("[data-ari-composer-mirror]").length,
+          rows: el.rows,
+          inline: el.style.height,
+        });
+      }, 180);
+    }));
+    assert.equal(grown.h, grown.before);
+    assert.ok(grown.h <= 48);
+    assert.ok(grown.sh > grown.ch);
+    assert.ok(grown.scroll > 0);
+    assert.equal(grown.writes, 0);
+    assert.equal(grown.mirror, 0);
+    assert.equal(grown.rows, 2);
+  } finally {
+    await session.close();
+  }
+});
+
+test("760 stays one line and 761 grows, then the phone lock returns", async () => {
+  const session = await openComposer();
+  try {
+    await session.page.setViewportSize({ width: 760, height: 700 });
+    await session.page.waitForTimeout(200);
+    const phone = await session.page.evaluate(() => {
+      const el = document.getElementById("conv-composer-textarea-input");
       el.focus();
       el.value = "One\nTwo\nThree\nFour";
       el.dispatchEvent(new Event("input", { bubbles: true }));
-      setTimeout(() => {
-        const r = el.getBoundingClientRect();
-        resolve({ h: Math.round(r.height), max: Math.round(parseFloat(getComputedStyle(el).maxHeight)) });
-      }, 120);
-    }));
-    assert.ok(grown.h > 48);
-    assert.ok(grown.h <= 96);
-    assert.equal(grown.max, 96);
+      el.style.height = "120px";
+      const r = el.getBoundingClientRect();
+      return { h: Math.round(r.height), w: window.innerWidth, mirror: document.querySelectorAll("[data-ari-composer-mirror]").length };
+    });
+    await session.page.waitForTimeout(120);
+    const phoneAfter = await session.page.evaluate(() => Math.round(document.getElementById("conv-composer-textarea-input").getBoundingClientRect().height));
+    assert.equal(phone.w, 760);
+    assert.equal(phone.h, 44);
+    assert.equal(phoneAfter, 44);
+    assert.equal(phone.mirror, 0);
+    await session.page.setViewportSize({ width: 761, height: 700 });
+    await session.page.waitForTimeout(250);
+    const desktop = await session.page.evaluate(() => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      const r = el.getBoundingClientRect();
+      return { h: Math.round(r.height), max: Math.round(parseFloat(getComputedStyle(el).maxHeight)) };
+    });
+    assert.ok(desktop.h > 44);
+    assert.ok(desktop.h <= 132);
+    assert.equal(desktop.max, 132);
+    await session.page.setViewportSize({ width: 390, height: 420 });
+    await session.page.waitForTimeout(250);
+    const back = await session.page.evaluate(() => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      const r = el.getBoundingClientRect();
+      return {
+        h: Math.round(r.height),
+        mirror: document.querySelectorAll("[data-ari-composer-mirror]").length,
+        mark: el.hasAttribute("data-ari-sized"),
+        rows: el.rows,
+      };
+    });
+    assert.equal(back.h, 44);
+    assert.equal(back.mirror, 0);
+    assert.equal(back.mark, false);
+    assert.equal(back.rows, 2);
   } finally {
     await session.close();
   }

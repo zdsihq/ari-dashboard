@@ -34,12 +34,12 @@ if (!shotMode) {
     assert.equal(css.includes("max-height:132px!important"), true);
     const cap760 = css.indexOf("@media (max-width:760px){html[data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-ari-messages-layout=v2][data-ari-msg7=v1] #conversations-central-panel-viewer div.relative:has(>div>#composer-textarea)");
     assert.ok(cap760 > 0);
-    assert.ok(css.indexOf("#conv-composer-textarea-input{max-height:96px!important;padding:10px 4px 10px 12px!important}", cap760) > cap760);
+    assert.ok(css.indexOf("#conv-composer-textarea-input{height:44px!important;min-height:44px!important;max-height:44px!important;overflow-y:auto!important;padding:10px 4px 10px 12px!important}", cap760) > cap760);
     assert.equal(css.includes("@media (min-width:761px){html[data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-ari-messages-layout=v2][data-ari-msg7=v1] #conversations-central-panel-viewer #conv-composer-textarea-input{max-height:132px!important}"), true);
     assert.equal(css.includes("min-height:42px!important;max-height:132px!important"), false);
     assert.equal(css.includes(":not([data-ari-composer-sizer=v1])"), true);
     assert.equal(css.includes("height:auto!important"), true);
-    assert.equal(css.includes("max-height:96px!important;padding:10px 4px 10px 12px!important"), true);
+    assert.equal(css.includes("height:44px!important;min-height:44px!important;max-height:44px!important;overflow-y:auto!important;padding:10px 4px 10px 12px!important"), true);
     assert.equal(css.includes("min-height:24px!important;max-height:96px!important"), false);
     assert.equal(css.includes("min-height:42px!important"), true);
     assert.equal(css.includes("min-height:44px!important"), true);
@@ -499,12 +499,12 @@ if (!shotMode) {
     }
   });
 
-  test("caps are 96 at 760 and below and 132 from 761, including touch 800", async () => {
+  test("phone 760 is one fixed line and desktop grows to 132, including touch 800", async () => {
     const cases = [
-      [760, 900, false, 96, 42, 15],
+      [760, 900, false, 44, 44, 15],
       [761, 900, false, 132, 42, 15],
       [800, 900, true, 132, 44, 16],
-      [390, 844, true, 96, 44, 16],
+      [390, 844, true, 44, 44, 16],
       [1280, 900, false, 132, 42, 15],
     ];
     for (const [width, height, noz, max, min, font] of cases) {
@@ -526,7 +526,16 @@ if (!shotMode) {
         await session.evalJson("JSON.stringify(window.__type(" + JSON.stringify("Synthetic line\n".repeat(14)) + "))");
         await new Promise((r) => setTimeout(r, 150));
         const filled = await session.evalJson("JSON.stringify(window.__box())");
-        assert.equal(px(filled.height), max, `${width} cap`);
+        if (width <= 760) {
+          assert.equal(px(filled.height), 44, `${width} stays one line`);
+          const scroll = await session.evalJson("JSON.stringify({sh:document.getElementById('conv-composer-textarea-input').scrollHeight,ch:document.getElementById('conv-composer-textarea-input').clientHeight,writes:window.__ariComposerSize.writes(),mirror:document.querySelectorAll('[data-ari-composer-mirror]').length,rows:document.getElementById('conv-composer-textarea-input').rows})");
+          assert.ok(scroll.sh > scroll.ch, `${width} text scrolls`);
+          assert.equal(scroll.mirror, 0);
+          assert.equal(scroll.writes, 0);
+          assert.equal(scroll.rows, 1);
+        } else {
+          assert.equal(px(filled.height), max, `${width} cap`);
+        }
         assert.equal(filled.overflowY, "auto");
         assert.equal(filled.hit, "conv-send-button-simple");
         assert.equal(filled.sw <= filled.cw + 1, true);
