@@ -366,3 +366,176 @@ html[data-ari-soft] [aria-label="Notification Drawer"] .hl_recent-activities:has
 html[data-ari-soft] [aria-label="Notification Drawer"]:has(#notification-tab-alert[aria-selected="true"]) #notification-list-containrer{display:none!important}
 html[data-ari-soft] [aria-label="Notification Drawer"] #notification_drawer-alert-container:has(> #notification_drawer-container-no_alert){display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:calc(100vh - 220px)!important}
 html[data-ari-soft] [aria-label="Notification Drawer"] #notification_drawer-container-no_alert{flex:1 1 auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;margin-top:0!important;min-height:100%!important}
+
+/* BEGIN desktop-agenda-ivory
+   Agenda only, width>=761. width<=760 is unchanged.
+   Measured ivory/gold stops are not tokens in v3.113 (the mini stays the green
+   slab there). They are declared once and shared by .ari-ag-mini and the Today
+   list. .ari-c3-eyebrow and .ari-c3-next stay on their existing rules.
+   Selected, other-month, today-ring, focus, and hover colors are not replaced.
+   There is no .ari-c3-empty-card class; the empty state is .ari-c3-x.ari-c3-none
+   inside .ari-ag-list. */
+@media (width>=761px){
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body){
+    --ari-desk-ivory:linear-gradient(160deg,#FFFDF8,#FAF6EE);
+    --ari-desk-foil:linear-gradient(135deg,#C09C56,#D8BD7E 30%,#EEE2AF 50%,#D8BD7E 70%,#C09C56);
+    --ari-desk-shadow:0 0 0 3px rgba(201,165,90,.10),0 6px 18px rgba(18,63,41,.08)
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag{
+    display:grid!important;
+    grid-template-columns:minmax(min(340px,100%),420px) minmax(0,1fr);
+    align-items:start;
+    gap:24px;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini{
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-direction:column!important;
+    flex:none!important;
+    align-self:start;
+    width:100%!important;
+    max-width:420px!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    position:static!important;
+    padding:16px 12px 14px!important;
+    border:1px solid transparent!important;
+    border-radius:18px!important;
+    background:var(--ari-desk-ivory) padding-box,var(--ari-desk-foil) border-box!important;
+    box-shadow:var(--ari-desk-shadow)!important;
+    color:#123F29;
+    font:400 15px/1.45 Jost,"Helvetica Neue",Arial,sans-serif
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-mini-hd{
+    min-width:0;
+    gap:8px
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-mini-hd h3{
+    min-width:0;
+    color:#123F29!important;
+    -webkit-text-fill-color:#123F29!important;
+    font-family:"Cormorant Garamond","Times New Roman",serif;
+    font-size:28px!important;
+    font-weight:500;
+    line-height:1.1;
+    text-align:center
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-mini-hd h3 :is(em,span){
+    color:#123F29!important;
+    -webkit-text-fill-color:#123F29!important;
+    font-size:28px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-arrow{
+    box-sizing:border-box!important;
+    background:#FFFDF8!important;
+    border:1px solid #8B6B2E!important;
+    border-radius:50%!important;
+    color:#8B6B2E!important;
+    -webkit-text-fill-color:#8B6B2E!important;
+    width:36px!important;
+    min-width:36px!important;
+    height:36px!important;
+    font-size:18px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-arrow:hover{
+    background:#e3c98e24!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-wd{
+    color:#123F29!important;
+    -webkit-text-fill-color:#123F29!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-grid{
+    flex:none!important;
+    width:100%;
+    min-width:0;
+    grid-template-rows:none!important;
+    min-height:0!important;
+    gap:4px 2px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-day{
+    border-radius:12px!important;
+    height:auto!important;
+    min-height:36px!important;
+    min-width:0;
+    padding-top:2px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-num{
+    width:28px!important;
+    height:28px!important;
+    border-radius:12px!important;
+    font-family:Jost,"Helvetica Neue",Arial,sans-serif;
+    font-size:15px!important;
+    font-weight:500;
+    color:#123F29;
+    -webkit-text-fill-color:#123F29
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-day.is-other .ari-ag-num{
+    font-size:.9em!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-marks{
+    height:auto!important;
+    min-height:13px!important;
+    margin-top:2px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-star{
+    color:#8B6B2E!important;
+    -webkit-text-fill-color:#8B6B2E!important;
+    font-size:13px!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-legend{
+    color:#123F29!important;
+    -webkit-text-fill-color:#123F29!important;
+    border-top:1px solid rgba(201,165,90,.45);
+    margin-top:12px!important;
+    padding:10px 2px 0!important;
+    gap:8px 14px!important;
+    flex-wrap:wrap;
+    font-family:Jost,"Helvetica Neue",Arial,sans-serif;
+    font-size:14px!important;
+    font-weight:600;
+    line-height:1.3
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-mini .ari-ag-lg-star:before{
+    color:#8B6B2E!important
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-ag-list{
+    display:block!important;
+    box-sizing:border-box!important;
+    align-self:start;
+    width:auto;
+    max-width:100%;
+    min-width:0;
+    margin:0!important;
+    padding:18px 20px 16px!important;
+    border:1px solid transparent!important;
+    border-radius:16px!important;
+    background:var(--ari-desk-ivory) padding-box,var(--ari-desk-foil) border-box!important;
+    box-shadow:var(--ari-desk-shadow)!important;
+    color:#1F5E43;
+    position:relative
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-c3-title{
+    color:#1F5E43;
+    -webkit-text-fill-color:#1F5E43;
+    overflow-wrap:anywhere;
+    max-width:100%
+  }
+  html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body) #ari-ag .ari-c3-x.ari-c3-none{
+    color:#123F29;
+    -webkit-text-fill-color:#123F29;
+    background:transparent;
+    border:0;
+    border-top:1px solid rgba(201,165,90,.35);
+    border-radius:0;
+    box-shadow:none;
+    margin:4px 0 0;
+    padding:14px 0 0
+  }
+}
+/* END desktop-agenda-ivory */
