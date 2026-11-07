@@ -368,14 +368,14 @@ html[data-ari-soft] [aria-label="Notification Drawer"] #notification_drawer-aler
 html[data-ari-soft] [aria-label="Notification Drawer"] #notification_drawer-container-no_alert{flex:1 1 auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;margin-top:0!important;min-height:100%!important}
 
 /* BEGIN desktop-agenda-ivory
-   Agenda only, width>=761. width<=760 is unchanged.
+   Agenda only, from 761px up via min-width. Rules at 760px and below are unchanged.
    Measured ivory/gold stops are not tokens in v3.113 (the mini stays the green
    slab there). They are declared once and shared by .ari-ag-mini and the Today
    list. .ari-c3-eyebrow and .ari-c3-next stay on their existing rules.
    Day states on the ivory card use existing dark-green and gold inks so the
    number stays legible and the mark stays visible. There is no .ari-c3-empty-card
    class; the empty state is .ari-c3-x.ari-c3-none inside .ari-ag-list. */
-@media (width>=761px){
+@media (min-width:761px){
   html[data-ari-no-crm-ai=v1] body[data-ari-calendar=view][data-ari-cal-view=agenda][data-ari-cal8=v1]:is(#a#b#c#d,body){
     --ari-desk-ivory:linear-gradient(160deg,#FFFDF8,#FAF6EE);
     --ari-desk-foil:linear-gradient(135deg,#C09C56,#D8BD7E 30%,#EEE2AF 50%,#D8BD7E 70%,#C09C56);

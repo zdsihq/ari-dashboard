@@ -55,7 +55,9 @@ test("css block is desktop-only and brace-balanced", () => {
   const end = css.indexOf("/* END desktop-agenda-ivory */");
   assert.ok(start > 0 && end > start);
   const block = css.slice(start, end);
-  assert.equal(block.indexOf("@media (width>=761px)"), block.lastIndexOf("@media (width>=761px)"));
+  assert.equal(block.includes("@media (min-width:761px){"), true);
+  assert.equal(block.indexOf("@media (min-width:761px)"), block.lastIndexOf("@media (min-width:761px)"));
+  assert.equal(block.includes("@media (width>=761px)"), false);
   assert.equal(block.includes("@media (width<=760px)"), false);
   assert.equal(block.includes("@media (max-width:760px)"), false);
   let depth = 0;
