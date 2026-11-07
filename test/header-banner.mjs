@@ -368,7 +368,7 @@ test("build marker matches the file stamp", async () => {
     const stamp = stampOf(js);
     const seen = await session.page.evaluate(() => document.documentElement.getAttribute("data-ari-build"));
     assert.equal(seen, stamp.expect);
-    assert.equal(seen, "s-47d318cf755e");
+    assert.equal(seen, "s-c8014029763f");
   } finally {
     await session.close();
   }
@@ -397,6 +397,148 @@ test("message list still pins to the bottom when the composer is not focused", a
     assert.equal(idle.y, 0);
     assert.equal(idle.top, idle.max);
     assert.ok(idle.max > 0);
+  } finally {
+    await session.close();
+  }
+});
+
+function sizerBundle() {
+  const hubAt = js.indexOf("/* v3.37 shared hub:");
+  const hubEnd = js.indexOf("(window,document);\n/* v3.44 route our", hubAt);
+  const sizerAt = js.lastIndexOf("/* composer content sizer:");
+  if (hubAt < 0 || hubEnd < hubAt || sizerAt < 0) throw new Error("sizer bundle markers missing");
+  return js.slice(hubAt, hubEnd + "(window,document);".length) + "\n" + js.slice(sizerAt);
+}
+
+function composerHtml() {
+  return `<!doctype html><html data-ari-no-crm-ai="v1" data-ari-msg-luxe="v2" data-ari-noz>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/dashboard.css"></head>
+<body data-ari-shell="v1" data-ari-messages-layout="v2" data-ari-msg7="v1" style="margin:0;height:100vh;display:flex;flex-direction:column;justify-content:flex-end">
+<div id="conversations-central-panel-viewer" style="width:100%">
+<div id="composer-textarea" style="width:100%">
+<textarea id="conv-composer-textarea-input" rows="2" style="width:100%"></textarea>
+</div></div>
+<script>
+document.getElementById("conv-composer-textarea-input").addEventListener("input",function(){
+  var el=this;
+  requestAnimationFrame(function(){
+    el.style.height="auto";
+    el.style.height=el.scrollHeight+"px";
+  });
+});
+<\/script>
+<script>${sizerBundle()}<\/script>
+</body></html>`;
+}
+
+async function openComposer() {
+  const webkit = loadWebkit();
+  const html = composerHtml();
+  const server = http.createServer((req, res) => {
+    if (req.url.split("?")[0] === "/dashboard.css") {
+      res.setHeader("content-type", "text/css");
+      res.end(css);
+      return;
+    }
+    res.setHeader("content-type", "text/html; charset=utf-8");
+    res.end(html);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const browser = await webkit.launch();
+  const page = await browser.newPage({ viewport: { width: 390, height: 420 } });
+  await page.goto(`http://127.0.0.1:${server.address().port}/v2/location/synthetic/conversations/conversations`);
+  await page.waitForTimeout(300);
+  return {
+    page,
+    async close() {
+      await browser.close();
+      server.close();
+    },
+  };
+}
+
+test("empty phone box stays one line across frames", async () => {
+  const session = await openComposer();
+  try {
+    const frames = await session.page.evaluate(() => new Promise((resolve) => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      el.focus();
+      const out = [];
+      let i = 0;
+      const step = () => {
+        const r = el.getBoundingClientRect();
+        out.push({ h: Math.round(r.height), top: Math.round(r.top), bot: Math.round(r.bottom), inline: el.style.height, rows: el.rows });
+        if (++i < 6) requestAnimationFrame(step);
+        else resolve(out);
+      };
+      requestAnimationFrame(step);
+    }));
+    assert.equal(frames[0].rows, 1);
+    for (const frame of frames) {
+      assert.equal(frame.h, frames[0].h);
+      assert.equal(frame.top, frames[0].top);
+      assert.equal(frame.bot, frames[0].bot);
+    }
+    assert.ok(frames[0].h <= 48);
+    assert.ok(frames[0].h >= 40);
+  } finally {
+    await session.close();
+  }
+});
+
+test("single line typing keeps height and on-screen position", async () => {
+  const session = await openComposer();
+  try {
+    const frames = await session.page.evaluate(() => new Promise((resolve) => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      el.focus();
+      const out = [];
+      const text = "Sample";
+      let n = 0;
+      function watch(left) {
+        const r = el.getBoundingClientRect();
+        out.push({ h: Math.round(r.height), top: Math.round(r.top), bot: Math.round(r.bottom), inline: el.style.height, val: el.value });
+        if (left > 1) requestAnimationFrame(() => watch(left - 1));
+        else next();
+      }
+      function next() {
+        if (n >= text.length) return resolve(out);
+        el.value += text[n++];
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        requestAnimationFrame(() => watch(6));
+      }
+      next();
+    }));
+    assert.ok(frames.length >= 6);
+    const base = frames[0];
+    for (const frame of frames) {
+      assert.equal(frame.h, base.h);
+      assert.equal(frame.top, base.top);
+      assert.equal(frame.bot, base.bot);
+    }
+    assert.equal(frames.at(-1).val, "Sample");
+    assert.ok(base.h <= 48);
+  } finally {
+    await session.close();
+  }
+});
+
+test("several lines still grow inside the phone cap", async () => {
+  const session = await openComposer();
+  try {
+    const grown = await session.page.evaluate(() => new Promise((resolve) => {
+      const el = document.getElementById("conv-composer-textarea-input");
+      el.focus();
+      el.value = "One\nTwo\nThree\nFour";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      setTimeout(() => {
+        const r = el.getBoundingClientRect();
+        resolve({ h: Math.round(r.height), max: Math.round(parseFloat(getComputedStyle(el).maxHeight)) });
+      }, 120);
+    }));
+    assert.ok(grown.h > 48);
+    assert.ok(grown.h <= 96);
+    assert.equal(grown.max, 96);
   } finally {
     await session.close();
   }
