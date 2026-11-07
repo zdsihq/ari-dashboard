@@ -20,6 +20,8 @@ function html(note) {
     const cls = ["ari-ag-day"];
     if (n <= 2) cls.push("is-other");
     if (n === 8) cls.push("is-today");
+    if (n === 15) cls.push("is-sel");
+    if (n === 22) cls.push("is-today", "is-sel");
     const star = n === 10 ? '<i class="ari-ag-star">★</i>' : "";
     const dot = n === 12 ? '<i class="ari-ag-dot"></i>' : "";
     days.push(
@@ -31,6 +33,8 @@ function html(note) {
 <style>html,body{margin:0;background:#fbf7ee}#banner{font:600 14px/1.35 ui-sans-serif,sans-serif;color:#123F29;background:#fffdf8;padding:10px 14px;border-bottom:1px solid #eadfcb}</style>
 </head><body data-ari-calendar="view" data-ari-cal8="v1" data-ari-cal-view="agenda">
 <div id="banner">SYNTHETIC FIXTURE — dashboard.css only — not a Template capture. ${note}</div>
+<div style="display:flex;width:100%">${note.includes("desktop") ? '<div style="width:260px;flex:none"></div>' : ""}
+<div style="width:${note.includes("desktop") ? "calc(100% - 260px)" : "100%"};min-width:0;box-sizing:border-box;padding:${note.includes("desktop") ? "12px" : "0"}">
 <div id="ari-ag">
   <section class="ari-ag-mini" aria-label="Month">
     <div class="ari-ag-mini-hd">
@@ -48,6 +52,8 @@ function html(note) {
     <div class="ari-c3-x ari-c3-head"><span class="ari-c3-eyebrow">Today</span><h3 class="ari-c3-title">Friday, November 6</h3></div>
     <p class="ari-c3-x ari-c3-none">No readings booked for this day.</p>
   </section>
+</div>
+</div>
 </div>
 <div id="pad" style="height:24px"></div>
 </body></html>`;
@@ -143,8 +149,8 @@ function shot(width, height, name, note) {
 const jobs = [
   [390, 900, "synthetic-phone-390.png", "390px — phone rules preserved. This is the source green stack, not the owner ivory capture."],
   [760, 1100, "synthetic-phone-760.png", "760px — still the phone stack."],
-  [761, 1100, "synthetic-desktop-761.png", "761px — desktop side-by-side starts."],
-  [1280, 1000, "synthetic-desktop-1280.png", "1280px — desktop ivory side-by-side."],
+  [761, 1100, "synthetic-desktop-761.png", "761px desktop — 260px sidebar, content is the remainder."],
+  [1280, 1000, "synthetic-desktop-1280.png", "1280px desktop — ivory month left, Today card right, 260px sidebar."],
 ];
 for (const job of jobs) {
   const dest = await shot(...job);

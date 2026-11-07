@@ -12,6 +12,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import zlib from "node:zlib";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cssPath = path.join(root, "dashboard.css");
@@ -112,7 +113,7 @@ test("measured text pairs meet WCAG AA on ivory", () => {
   }
 });
 
-function fixture({ view = "agenda", withAppt = false } = {}) {
+function fixture({ view = "agenda", withAppt = false, sidebar = false } = {}) {
   const days = [];
   for (let n = 1; n <= 35; n++) {
     const dom = ((n - 1) % 30) + 1;
@@ -136,6 +137,9 @@ function fixture({ view = "agenda", withAppt = false } = {}) {
 <style>html,body{margin:0;background:#fbf7ee}#banner{font:600 13px/1.3 ui-sans-serif,sans-serif;color:#123F29;padding:8px 12px}</style>
 </head><body data-ari-calendar="view" data-ari-cal8="v1" data-ari-cal-view="${view}">
 <div id="banner">SYNTHETIC FIXTURE — dashboard.css only — not a Template capture</div>
+<div id="shell" style="display:flex;width:100%">
+${sidebar ? '<div id="side" style="width:260px;flex:none"></div>' : ""}
+<div id="main" style="width:${sidebar ? "calc(100% - 260px)" : "100%"};min-width:0;box-sizing:border-box;padding:${sidebar ? "12px" : "0"}">
 <div id="ari-ag" data-sig="synthetic">
   <section class="ari-ag-mini" aria-label="Month">
     <div class="ari-ag-mini-hd">
@@ -155,6 +159,8 @@ function fixture({ view = "agenda", withAppt = false } = {}) {
     ${coming}
     ${appt}
   </section>
+</div>
+</div>
 </div>
 <script>
 function grab(sel){
@@ -336,12 +342,15 @@ test("phone widths keep the v3.113 stack and green mini", async () => {
     assert.equal(data.otherTab, -1);
     assert.equal(data.todayTab, 0);
     assert.equal(data.num.pointer, "auto");
+    rgbClose(data.selNum.color, "#fffdf8");
+    rgbClose(data.otherNum.color, "#d7e6da");
+    rgbClose(data.focus.outlineColor, "#e3c98e");
   }
 });
 
 test("desktop agenda is ivory, side by side, and does not overflow", async () => {
   for (const width of [761, 1024, 1280, 1440, 1920]) {
-    const data = await runChrome(fixture({ withAppt: true }), width, 1100);
+    const data = await runChrome(fixture({ withAppt: true, sidebar: true }), width, 1100);
     assert.ok(Math.abs(data.innerWidth - width) <= 20, `viewport ${data.innerWidth} for ${width}`);
     assert.match(data.ivory, /160deg/);
     assert.match(data.ivory, /#FFFDF8|255,\s*253,\s*248/);
@@ -353,8 +362,13 @@ test("desktop agenda is ivory, side by side, and does not overflow", async () =>
     assert.equal(data.list.display, "block");
     assert.ok(data.mini.right <= data.list.left + 1, `not side by side mini ${data.mini.right} list ${data.list.left}`);
     assert.ok(Math.abs(data.mini.top - data.list.top) < 4, "cards not top-aligned");
-    assert.ok(data.mini.width >= 340 - 1 && data.mini.width <= 420 + 1, `mini width ${data.mini.width} at ${width}`);
-    assert.ok(data.list.width > 80, `today column ${data.list.width}`);
+    assert.ok(data.mini.width <= 420 + 1, `mini width ${data.mini.width} at ${width}`);
+    if (data.ag.width >= 340 + 24 + 140) {
+      assert.ok(data.mini.width >= 340 - 1, `mini width ${data.mini.width} at ${width} content ${data.ag.width}`);
+    } else {
+      assert.ok(data.mini.width >= 240, `mini width ${data.mini.width} at ${width} content ${data.ag.width}`);
+    }
+    assert.ok(data.list.width >= 140 - 1, `today column ${data.list.width}`);
     assert.match(data.mini.bg, /255,\s*253,\s*248/);
     assert.match(data.mini.bg, /192,\s*156,\s*86/);
     assert.equal(data.mini.bg.includes("27, 94, 59") || data.mini.bg.includes("27,94,59"), false);
@@ -393,9 +407,6 @@ test("desktop agenda is ivory, side by side, and does not overflow", async () =>
     rgbClose(data.none.borderTopColor, "#C9A55A", 2);
     rgbClose(data.next.color, "#56615B");
     assert.equal(data.next.borderTopWidth, "1px");
-    rgbClose(data.selNum.color, "#fffdf8");
-    rgbClose(data.otherNum.color, "#d7e6da");
-    assert.match(data.todayNum.shadow, /227,\s*201,\s*142|e3c98e/i);
     rgbClose(data.card.color, "#17231d");
     rgbClose(data.card.bgColor, "#ffffff");
     noOverflow(data);
@@ -419,10 +430,264 @@ test("761 is the boundary and grid view is not forced into the agenda grid", asy
 });
 
 test("keyboard focus keeps the existing day outline", async () => {
-  const data = await runChrome(fixture(), 1280, 1000);
-  assert.equal(data.focus.matches, true, "today day did not match :focus-visible");
-  assert.equal(data.focus.outlineStyle, "solid");
-  rgbClose(data.focus.outlineColor, "#e3c98e");
+  const phone = await runChrome(fixture(), 390, 900);
+  assert.equal(phone.focus.matches, true, "today day did not match :focus-visible");
+  assert.equal(phone.focus.outlineStyle, "solid");
+  rgbClose(phone.focus.outlineColor, "#e3c98e");
+  const desk = await runChrome(fixture({ sidebar: true }), 1280, 1000);
+  assert.equal(desk.focus.matches, true);
+  assert.equal(desk.focus.outlineStyle, "solid");
+  rgbClose(desk.focus.outlineColor, "#1f5e43");
   assert.match(css, /\.ari-ag-day:focus-visible\{outline-offset:-2px;outline:2px solid #e3c98e\}/);
   assert.match(css, /#ari-ag \.ari-ag-card:focus-visible\{outline-offset:2px!important;outline:2px solid #1f5e43!important\}/);
+});
+
+function decodePng(buf) {
+  let o = 8;
+  const idat = [];
+  let w = 0;
+  let h = 0;
+  let color = 2;
+  while (o < buf.length) {
+    const n = buf.readUInt32BE(o);
+    const typ = buf.toString("ascii", o + 4, o + 8);
+    if (typ === "IHDR") {
+      w = buf.readUInt32BE(o + 8);
+      h = buf.readUInt32BE(o + 12);
+      color = buf[o + 17];
+    } else if (typ === "IDAT") idat.push(buf.subarray(o + 8, o + 8 + n));
+    else if (typ === "IEND") break;
+    o += 12 + n;
+  }
+  const raw = zlib.inflateSync(Buffer.concat(idat));
+  const bpp = color === 6 ? 4 : 3;
+  const stride = w * bpp + 1;
+  const out = new Uint8Array(w * h * 3);
+  let prev = new Uint8Array(w * bpp);
+  const paeth = (a, b, c) => {
+    const p = a + b - c;
+    const pa = Math.abs(p - a);
+    const pb = Math.abs(p - b);
+    const pc = Math.abs(p - c);
+    return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
+  };
+  for (let y = 0; y < h; y++) {
+    const row = raw.subarray(y * stride, (y + 1) * stride);
+    const f = row[0];
+    const cur = new Uint8Array(w * bpp);
+    for (let x = 0; x < w * bpp; x++) {
+      const left = x >= bpp ? cur[x - bpp] : 0;
+      const up = prev[x];
+      const ul = x >= bpp ? prev[x - bpp] : 0;
+      const v = row[x + 1];
+      cur[x] =
+        f === 0 ? v : f === 1 ? (v + left) & 255 : f === 2 ? (v + up) & 255 : f === 3 ? (v + ((left + up) >> 1)) & 255 : (v + paeth(left, up, ul)) & 255;
+    }
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 3;
+      const j = x * bpp;
+      out[i] = cur[j];
+      out[i + 1] = cur[j + 1];
+      out[i + 2] = cur[j + 2];
+    }
+    prev = cur;
+  }
+  return { w, h, out };
+}
+
+function pix(img, x, y) {
+  x = Math.max(0, Math.min(img.w - 1, x | 0));
+  y = Math.max(0, Math.min(img.h - 1, y | 0));
+  const i = (y * img.w + x) * 3;
+  return [img.out[i], img.out[i + 1], img.out[i + 2]];
+}
+
+function relLum(rgb) {
+  const c = rgb.map((v) => {
+    const s = v / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+
+function rgbContrast(a, b) {
+  const A = relLum(a);
+  const B = relLum(b);
+  return (Math.max(A, B) + 0.05) / (Math.min(A, B) + 0.05);
+}
+
+function parseRgb(s) {
+  const m = String(s).match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  assert.ok(m, `not rgb: ${s}`);
+  return [Number(m[1]), Number(m[2]), Number(m[3])];
+}
+
+function stateFixture() {
+  const spec = [
+    ["other", 1],
+    ["normal", 4],
+    ["today", 8],
+    ["hover", 10],
+    ["selected", 15],
+    ["both", 22],
+    ["focus", 29],
+  ];
+  const days = [];
+  for (let n = 1; n <= 35; n++) {
+    const hit = spec.find((s) => s[1] === n);
+    const state = hit ? hit[0] : "plain";
+    const cls = ["ari-ag-day"];
+    if (state === "other") cls.push("is-other");
+    if (state === "today" || state === "both") cls.push("is-today");
+    if (state === "selected" || state === "both") cls.push("is-sel");
+    days.push(
+      `<button id="d-${state}-${n}" class="${cls.join(" ")}" type="button" data-state="${state}"><span class="ari-ag-num">${n}</span></button>`
+    );
+  }
+  const wds = ["S", "M", "T", "W", "T", "F", "S"].map((d) => `<span class="ari-ag-wd">${d}</span>`).join("");
+  return `<!DOCTYPE html><html data-ari-no-crm-ai="v1"><head><link rel="stylesheet" href="file://${cssPath}"></head>
+<body data-ari-calendar="view" data-ari-cal8="v1" data-ari-cal-view="agenda" style="margin:0;background:#fbf7ee">
+<div style="display:flex;width:100%"><div style="width:260px;flex:none"></div>
+<div style="width:calc(100% - 260px);min-width:0;box-sizing:border-box;padding:12px">
+<div id="ari-ag"><section class="ari-ag-mini"><div class="ari-ag-grid">${wds}${days.join("")}</div></section>
+<section class="ari-ag-list"></section></div></div></div>
+<script>window.__rects=function(){const o={}; for (const el of document.querySelectorAll("[data-state]:not([data-state=plain])")){const num=el.querySelector(".ari-ag-num"); const r=el.getBoundingClientRect(); const n=num.getBoundingClientRect(); const cs=getComputedStyle(num); const ds=getComputedStyle(el); o[el.dataset.state]={color:cs.color,fill:cs.webkitTextFillColor,day:[r.x,r.y,r.width,r.height],num:[n.x,n.y,n.width,n.height],os:ds.outlineStyle,oc:ds.outlineColor};} return o;};</script>
+</body></html>`;
+}
+
+async function paintStates(width) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ari-paint-"));
+  const file = path.join(dir, "fixture.html");
+  fs.writeFileSync(file, stateFixture());
+  const chrome = spawn(
+    CHROME,
+    [
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--remote-debugging-port=0",
+      `--user-data-dir=${path.join(dir, "p")}`,
+      `file://${file}`,
+    ],
+    { stdio: ["ignore", "ignore", "pipe"] }
+  );
+  let err = "";
+  const port = await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("no port")), 15000);
+    chrome.stderr.on("data", (buf) => {
+      err += buf;
+      const m = err.match(/127\.0\.0\.1:(\d+)\//);
+      if (m) {
+        clearTimeout(timer);
+        resolve(Number(m[1]));
+      }
+    });
+  });
+  const list = await fetch(`http://127.0.0.1:${port}/json/list`).then((r) => r.json());
+  const page = list.find((t) => t.type === "page");
+  const ws = new WebSocket(page.webSocketDebuggerUrl);
+  await new Promise((resolve) => ws.addEventListener("open", resolve));
+  let seq = 0;
+  const pending = new Map();
+  ws.addEventListener("message", (ev) => {
+    const msg = JSON.parse(ev.data);
+    if (!msg.id || !pending.has(msg.id)) return;
+    const waiter = pending.get(msg.id);
+    pending.delete(msg.id);
+    if (msg.error) waiter.reject(new Error(JSON.stringify(msg.error)));
+    else waiter.resolve(msg.result);
+  });
+  const send = (method, params = {}) =>
+    new Promise((resolve, reject) => {
+      const id = ++seq;
+      pending.set(id, { resolve, reject });
+      ws.send(JSON.stringify({ id, method, params }));
+    });
+  await send("Emulation.setDeviceMetricsOverride", { width, height: 900, deviceScaleFactor: 1, mobile: false });
+  await send("DOM.enable");
+  await send("CSS.enable");
+  for (let i = 0; i < 30; i++) {
+    const ready = await send("Runtime.evaluate", { expression: "window.__rects?1:0", returnByValue: true });
+    if (ready.result.value) break;
+    await new Promise((r) => setTimeout(r, 40));
+  }
+  const doc = await send("DOM.getDocument");
+  const hover = await send("DOM.querySelector", { nodeId: doc.root.nodeId, selector: "#d-hover-10" });
+  await send("CSS.forcePseudoState", { nodeId: hover.nodeId, forcedPseudoClasses: ["hover"] });
+  const focus = await send("DOM.querySelector", { nodeId: doc.root.nodeId, selector: "#d-focus-29" });
+  await send("CSS.forcePseudoState", { nodeId: focus.nodeId, forcedPseudoClasses: ["focus", "focus-visible"] });
+  await new Promise((r) => setTimeout(r, 40));
+  const evaluated = await send("Runtime.evaluate", { expression: "JSON.stringify(window.__rects())", returnByValue: true });
+  const shot = await send("Page.captureScreenshot", { format: "png" });
+  ws.close();
+  chrome.kill();
+  return { rects: JSON.parse(evaluated.result.value), img: decodePng(Buffer.from(shot.data, "base64")) };
+}
+
+test("desktop day states pass on the painted background and the old slab colors fail", async () => {
+  for (const width of [761, 1280]) {
+    const { rects, img } = await paintStates(width);
+    const interior = (name) => {
+      const d = rects[name].day;
+      return pix(img, Math.round(d[0] + d[2] / 2), Math.round(d[1] + d[3] - 4));
+    };
+    const textOf = (name) => parseRgb(rects[name].fill || rects[name].color);
+    const textContrast = (name) => rgbContrast(textOf(name), interior(name));
+    for (const name of ["normal", "other", "today", "hover", "selected", "both", "focus"]) {
+      assert.ok(textContrast(name) >= 4.5, `${width} ${name} text ${textContrast(name).toFixed(2)} on ${interior(name)}`);
+    }
+    const ringContrast = (name) => {
+      const n = rects[name].num;
+      const bg = interior(name);
+      const x = Math.round(n[0]);
+      const y = Math.round(n[1]);
+      const w = Math.max(1, Math.round(n[2]));
+      const h = Math.max(1, Math.round(n[3]));
+      const target = [139, 107, 46];
+      let best = null;
+      const consider = (p) => {
+        const d = Math.abs(p[0] - target[0]) + Math.abs(p[1] - target[1]) + Math.abs(p[2] - target[2]);
+        const c = rgbContrast(p, bg);
+        if (!best || d < best.d) best = { d, c, p };
+      };
+      for (let i = 0; i < w; i++) {
+        consider(pix(img, x + i, y));
+        consider(pix(img, x + i, y + h - 1));
+      }
+      for (let i = 0; i < h; i++) {
+        consider(pix(img, x, y + i));
+        consider(pix(img, x + w - 1, y + i));
+      }
+      return best;
+    };
+    for (const name of ["today", "both"]) {
+      const ring = ringContrast(name);
+      assert.ok(ring.d < 80, `${width} ${name} ring pixel ${ring.p} is not the gold ink`);
+      assert.ok(ring.c >= 3, `${width} ${name} ring contrast ${ring.c.toFixed(2)}`);
+    }
+    for (const name of ["selected", "both"]) {
+      const d = rects[name].day;
+      const cx = Math.round(d[0] + d[2] / 2);
+      const top = Math.round(d[1]);
+      let edge = 0;
+      for (let dy = 0; dy <= 2; dy++) edge = Math.max(edge, rgbContrast(pix(img, cx, top + dy), pix(img, cx, top - 4)));
+      assert.ok(edge >= 3, `${name} edge ${edge.toFixed(2)}`);
+    }
+    const focusDay = rects.focus.day;
+    const focusX = Math.round(focusDay[0] + focusDay[2] / 2);
+    const focusTop = Math.round(focusDay[1]);
+    const outlinePx = pix(img, focusX, focusTop - 3);
+    const beyond = pix(img, focusX, focusTop - 7);
+    assert.equal(rects.focus.os, "solid");
+    assert.ok(rgbContrast(outlinePx, beyond) >= 3, `focus ${rgbContrast(outlinePx, beyond).toFixed(2)}`);
+    const hoverBg = interior("hover");
+    const normalBg = interior("normal");
+    const channelDelta = hoverBg.reduce((sum, v, i) => sum + Math.abs(v - normalBg[i]), 0);
+    assert.ok(channelDelta >= 40, `hover fill is not distinct from the card (${channelDelta})`);
+    const ivory = interior("normal");
+    assert.ok(rgbContrast([255, 253, 248], ivory) < 4.5, "old selected ivory text would still fail on this card");
+    assert.ok(rgbContrast([215, 230, 218], ivory) < 4.5, "old other-month text would still fail on this card");
+    assert.ok(rgbContrast([227, 201, 142], ivory) < 3, "old gold focus would still fail on this card");
+  }
 });
