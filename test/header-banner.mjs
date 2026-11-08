@@ -368,7 +368,7 @@ test("build marker matches the file stamp", async () => {
     const stamp = stampOf(js);
     const seen = await session.page.evaluate(() => document.documentElement.getAttribute("data-ari-build"));
     assert.equal(seen, stamp.expect);
-    assert.equal(seen, "s-9a5975321ccb");
+    assert.equal(seen, "s-9090cfb4bfa7");
   } finally {
     await session.close();
   }
