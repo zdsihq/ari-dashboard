@@ -219,6 +219,56 @@ test("stopping the readout removes it and a route change does not leave it runni
   }
 });
 
+test("the readout fits a narrow phone without clipping a full row", async () => {
+  const session = await open("?ari_debug=composer", "/composer-debug.js");
+  try {
+    await session.page.setViewportSize({ width: 320, height: 420 });
+    const fit = await session.page.evaluate(() => {
+      const el = document.getElementById("ari-composer-debug");
+      const block = [
+        "12 compositionupdate 9999ms",
+        "insertCompositionText",
+        "f 9999..9999/9999..9999",
+        "p 9999..9999/9999..9999",
+        "c 9999..9999/9999..9999",
+        "b 9999..9999/9999..9999",
+        "vv 9999..9999 y 9999",
+        "o 9999,9999..9999",
+      ].join("\n");
+      const worst = ["dbg composer", block, block].join("\n");
+      el.textContent = worst;
+      const r = el.getBoundingClientRect();
+      return {
+        sw: el.scrollWidth,
+        cw: el.clientWidth,
+        sh: el.scrollHeight,
+        ch: el.clientHeight,
+        right: Math.round(r.right),
+        vw: window.innerWidth,
+        wrap: getComputedStyle(el).whiteSpace,
+      };
+    });
+    assert.equal(fit.wrap, "pre-wrap");
+    assert.ok(fit.right <= fit.vw);
+    assert.ok(fit.sw <= fit.cw + 1, JSON.stringify(fit));
+    assert.ok(fit.sh <= fit.ch + 1, JSON.stringify(fit));
+  } finally {
+    await session.close();
+  }
+});
+
+test("the debug script url follows the loaded dashboard.js and is not pinned", () => {
+  const loader = js.toString().slice(js.toString().lastIndexOf("composer debug loader"));
+  assert.equal(loader.includes("dashboard\\.js(?=($|\\?))"), true);
+  assert.equal(loader.includes("unpkg"), false);
+  assert.equal(loader.includes("@main/"), false);
+  assert.equal(loader.includes("9c168cb"), false);
+  assert.equal(loader.includes("d02b27c"), false);
+  const map = (src) => src.replace(/dashboard\.js(?=($|\?))/, "composer-debug.js");
+  assert.equal(map("https://cdn.jsdelivr.net/gh/zdsihq/ari-dashboard@v3.117/dashboard.js"), "https://cdn.jsdelivr.net/gh/zdsihq/ari-dashboard@v3.117/composer-debug.js");
+  assert.equal(map("https://cdn.jsdelivr.net/gh/zdsihq/ari-dashboard@9c168cbe5f3d2389ba3715ff001d3a82664a177f/dashboard.js"), "https://cdn.jsdelivr.net/gh/zdsihq/ari-dashboard@9c168cbe5f3d2389ba3715ff001d3a82664a177f/composer-debug.js");
+});
+
 test("source keeps the readout off the skin stylesheet and reserves none without applying it", () => {
   const proposal = fs.readFileSync(path.join(root, "NOT-STOCK-ari-skin-none.js"), "utf8");
   assert.equal(proposal.includes("NOT STOCK"), true);

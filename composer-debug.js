@@ -7,7 +7,7 @@
 if(w.__ariComposerDebug)return;
 var q;try{q=new URLSearchParams(w.location.search)}catch(e){return}
 if(!q||q.getAll("ari_debug").length!==1||q.get("ari_debug")!=="composer")return;
-var FR=8,KEEP=6,alive=1,raf=0,running=0,seq=0,rows=[],boxEl=null;
+var FR=8,KEEP=2,alive=1,raf=0,running=0,seq=0,rows=[],boxEl=null;
 function allow(s){return typeof s==="string"&&/^[a-zA-Z]{1,32}$/.test(s)?s:"other"}
 function rect(el){if(!el||!el.getBoundingClientRect)return null;var r=el.getBoundingClientRect();return{h:Math.round(r.height),t:Math.round(r.top)}}
 function locate(){
@@ -40,14 +40,16 @@ function paint(){
   var lines=["dbg composer"];
   for(var i=0;i<rows.length;i++){
     var r=rows[i],n=r.nodes,parts=[String(r.seq),r.kind,r.inputType,String(r.dt)];
-    ["field","parent","card","box"].forEach(function(k){
-      var s=n[k];
-      if(!s||s.st!=="ok")parts.push(k[0]+" "+(s&&s.st?s.st:"unknown"));
-      else parts.push(k[0]+" "+s.hMin+(s.hMin===s.hMax?"":".."+s.hMax)+"/"+s.tMin+(s.tMin===s.tMax?"":".."+s.tMax));
-    });
+    function bit(k){var s=n[k],name=k[0];if(!s||s.st!=="ok")return name+" "+(s&&s.st?s.st:"unknown");return name+" "+s.hMin+(s.hMin===s.hMax?"":".."+s.hMax)+"/"+s.tMin+(s.tMin===s.tMax?"":".."+s.tMax)}
     var v=r.vv;
-    parts.push("vv "+v.hMin+(v.hMin===v.hMax?"":".."+v.hMax)+" o "+v.l+","+v.tMin+(v.tMin===v.tMax?"":".."+v.tMax)+" y "+v.y);
-    lines.push(parts.join(" "));
+    lines.push(parts[0]+" "+parts[1]+" "+parts[3]+"ms");
+    lines.push(parts[2]);
+    lines.push(bit("field"));
+    lines.push(bit("parent"));
+    lines.push(bit("card"));
+    lines.push(bit("box"));
+    lines.push("vv "+v.hMin+(v.hMin===v.hMax?"":".."+v.hMax)+" y "+v.y);
+    lines.push("o "+v.l+","+v.tMin+(v.tMin===v.tMax?"":".."+v.tMax));
   }
   boxEl.textContent=lines.join("\n");
 }
@@ -108,7 +110,7 @@ function ui(){
   boxEl=d.createElement("pre");
   boxEl.id="ari-composer-debug";
   boxEl.setAttribute("aria-hidden","true");
-  boxEl.style.cssText="position:fixed;left:8px;top:8px;z-index:2147483646;width:300px;height:168px;margin:0;overflow:hidden;pointer-events:none;contain:strict;font:11px/14px ui-monospace,monospace;color:#102218;background:rgba(255,250,240,.94);border:1px solid #243;padding:4px 6px;box-sizing:border-box";
+  boxEl.style.cssText="position:fixed;left:8px;top:8px;z-index:2147483646;width:calc(100vw - 16px);max-width:320px;height:252px;margin:0;overflow:hidden;pointer-events:none;contain:strict;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font:11px/14px ui-monospace,monospace;color:#102218;background:rgba(255,250,240,.94);border:1px solid #243;padding:4px 6px;box-sizing:border-box";
   (d.documentElement||d.body).appendChild(boxEl);
 }
 function stop(){
