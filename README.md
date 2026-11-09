@@ -39,3 +39,10 @@ Alerts empty state: Notification Drawer `.blank-list` fills the pane (ivory back
 
 ## v3.113
 Alerts empty state: fill height only. Stock emoji and copy kept. v3.112 `.blank-list` rules removed. JS is v3.112 with the version marker bumped to v3.113.
+
+## v3.118
+Customer card + Book appointment on phones (Nov 9 2026).
+- JS: dash-fix `g()` no longer hides anything inside GHL's `.vue-recycle-scroller` on contacts/detail (hiding rows inside the virtual list made it re-measure and re-render in a loop: lag, jumps, sections opening by themselves). `k.calnew` no longer hides a container that holds the whole booking form (on phones it climbed from the "Internal notes" label to the full form).
+- CSS: contact-card hide rule no longer hides `[data-ari-cd-field=empty|platform]` / `[data-ari-cd-folder=empty]` (same virtual-list reason). Phone (<=760px): card row is the only scroll area, full width; empty tab strip hidden; Notes is a green button at bottom right. Book appointment pop-up: full width, columns stacked, footer wraps so Cancel/Book stay on screen.
+- Paired agency change: Custom JS turns off "ARI cd-paint2t" (window.__ariPaint stub) and Custom CSS wraps the old cd-phone4 / cd-layout-ru / cd-ios-supports / cd-ios2 blocks in `@media not all` ("ARI cd-phone-off v1").
+
