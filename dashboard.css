@@ -583,3 +583,6 @@ html[data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-a
 #ai-bot-popover span.font-semibold.text-lg{font-size:0!important}
 #ai-bot-popover span.font-semibold.text-lg::after{content:"Ari for this client";font-size:18px}
 #ai-bot-popover span.ml-1.text-gray-400.cursor-pointer,#ai-bot-popover div.text-sm.text-gray-500.mb-3{display:none!important}
+/* v3.119 phone Ari Chats: the email typing box is broken on phones (Zion Nov 15 2026): hide it there and point her to Ask Ari. */
+html[data-ari-noz]:is(#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z,html) body #conversations-central-panel-viewer div:has(>:is(#composer-deferred-footer,#composer-textarea) #conv-provider-select-trigger[aria-label*="current: Email"])>*{display:none!important}
+html[data-ari-noz]:is(#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z,html) body #conversations-central-panel-viewer div:has(>:is(#composer-deferred-footer,#composer-textarea) #conv-provider-select-trigger[aria-label*="current: Email"])::after{content:"To email this client, ask Ari on your Ask Ari page.";display:block;padding:14px 16px;text-align:center;font:500 14px/1.4 Jost,system-ui,sans-serif;color:#5B6660}
