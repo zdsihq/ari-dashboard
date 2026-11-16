@@ -597,3 +597,8 @@ html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u
 
 /* v3.121 (Zion Nov 16 2026): hide Add to Favorites (star) and Archive Conversation (folder) in the chat bar, phones and computers. No starred or archived list exists in Ari Chats, so a tap would only lose a chat. Mark unread stays. */
 html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body :is(#star-toggle,#archive-conversation){display:none!important}
+
+/* v3.122 (Zion Nov 16 2026): Ari Chats easy fixes. (a) HighLevel system lines in a chat ("Your chat has ended", the inactivity line) small and light grey so real messages stand out. (b) hide Delete Conversation (trash, computers): it deletes a client chat for good. Display only. */
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body [data-testid="activity-pill-v1-info"],html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body [data-testid="activity-pill-v1-info"] :is(div,span){font-size:11px!important;line-height:15px!important;color:#a39d8f!important;-webkit-text-fill-color:#a39d8f!important}
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body [data-testid="activity-pill-v1-info"] svg{width:12px!important;height:12px!important;color:#c2bcad!important;stroke:#c2bcad!important}
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body #delete-conversation{display:none!important}
