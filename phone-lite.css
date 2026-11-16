@@ -96,3 +96,6 @@ html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u
 
 /* v3.120b: the green bar rule forces every .flex child to show on phones; outrank it so the Filter messages menu stays hidden. */
 html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body #chat-filter{display:none!important}
+
+/* v3.121 (Zion Nov 16 2026): hide Add to Favorites (star) and Archive Conversation (folder) in the chat bar, phones and computers. No starred or archived list exists in Ari Chats, so a tap would only lose a chat. Mark unread stays. */
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body :is(#star-toggle,#archive-conversation){display:none!important}
