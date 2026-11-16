@@ -81,3 +81,9 @@ body[data-arl-chat] header.hl_header :is(.hl_header--controls,#hl_header--copilo
 body[data-arl-chat] header.hl_header:has(#ari-lite-bar){height:auto!important;min-height:0!important;padding:6px 8px!important;display:flex!important;align-items:center!important}
 body[data-arl-chat] header.hl_header:has(#ari-lite-bar)>:has(#ari-lite-bar){flex:1!important;min-width:0!important;margin:0!important;padding:0!important}
 body[data-arl-chat] #ari-lite-bar{margin-left:auto;padding:4px 2px}
+/* v3.119 Ari on/off box in Ari words (phone). */
+#conv-composer-footer div.w-6.h-6.cursor-pointer .rounded-sm{background-color:#E6F0EA!important}
+#conv-composer-footer div.w-6.h-6.cursor-pointer svg{stroke:#1F5E43!important}
+#ai-bot-popover span.font-semibold.text-lg{font-size:0!important}
+#ai-bot-popover span.font-semibold.text-lg::after{content:"Ari for this client";font-size:18px}
+#ai-bot-popover span.ml-1.text-gray-400.cursor-pointer,#ai-bot-popover div.text-sm.text-gray-500.mb-3{display:none!important}

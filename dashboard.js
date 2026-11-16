@@ -174,3 +174,16 @@ start();
 w.__ariComposerSize={version:"sizer2",sync:function(){return schedule()},start:start,stop:stop,writes:function(){return writes},resetWrites:function(){writes=0},running:function(){return live===1}}}catch(e){try{console.warn("ari composer sizer",e)}catch(x){}}}(window,document);
 /* composer debug loader: exact query ari_debug=composer requests the sibling file once. Otherwise no request. */
 !function(w,d){try{var q;try{q=new URLSearchParams(w.location.search)}catch(e){return}if(!q||q.getAll("ari_debug").length!==1||q.get("ari_debug")!=="composer"||w.__ariComposerDebug)return;var cur=d.currentScript,src=cur&&cur.src;if(!src)return;var u=src.replace(/dashboard\.js(?=($|\?))/, "composer-debug.js");if(!u||u===src)return;var s=d.createElement("script");s.src=u;s.async=!1;s.setAttribute("data-ari-debug-src","1");(d.documentElement||d.head||d.body).appendChild(s)}catch(e){}}(window,document);
+/* v3.119 Ari on/off words (Zion Nov 15 2026): HighLevel's per-client AI box says "bot"; say "Ari". Text only, no clicks, no settings. */
+!function(w,d){try{if(w.__ariOnOff)return;w.__ariOnOff=1;var t=0;
+function say(n,v){if(n&&n.nodeType===3&&n.textContent!==v)n.textContent=v}
+function txt(e){if(!e)return null;for(var i=0;i<e.childNodes.length;i++){var n=e.childNodes[i];if(n.nodeType===3&&n.textContent.trim())return n}return null}
+function fix(){t=0;try{
+var a=txt(d.querySelector("#ai-bot-tooltip .hr-tooltip__content span")||d.querySelector("#ai-bot-tooltip .hr-tooltip__content"));
+if(a){var m=/^\s*AI Bot \(([^)]*)\)\s*$/.exec(a.textContent);if(m){var s=m[1].toLowerCase();say(a,s==="active"?"Ari is on":s==="inactive"?"Ari is off":"Ari ("+m[1]+")")}}
+var b=txt(d.querySelector("#ai-bot-popover span.flex.items-center.gap-2.text-sm"));
+if(b){var x=b.textContent;if(/^\s*The bot is active\b/i.test(x))say(b,"Ari is answering this client.");else if(/^\s*The bot\b/.test(x))say(b,x.replace(/^\s*The bot\b/,"Ari"))}
+}catch(e){}}
+function kick(){if(!t)t=w.setTimeout(fix,120)}
+function go(){if(!d.body)return w.setTimeout(go,300);new MutationObserver(kick).observe(d.body,{childList:true,subtree:true,characterData:true});kick()}
+go()}catch(e){}}(window,document);

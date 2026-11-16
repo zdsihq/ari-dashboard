@@ -54,3 +54,16 @@ d.addEventListener("keydown",function(ev){if("Enter"!==ev.key&&" "!==ev.key||!on
 var b=isSend(ev.target);if(b)return void sign(b);if("Enter"!==ev.key||ev.shiftKey||ev.altKey)return;var n=ev.target&&ev.target.closest&&ev.target.closest(F);if(!n||!field(n))return;
 var r=sign(n,n);if(r&&!(ev.ctrlKey||ev.metaKey)){/* plain Enter: undo if GHL did not send (Enter was a new line) */w.setTimeout(function(){try{var now=txt(r.n);if(now&&now.trim()&&now.indexOf("\n"+r.a)>=0&&"TEXTAREA"===r.n.tagName){put(r.n,now.replace("\n"+r.a,""))}}catch(x){}},350)}}catch(x){}},!0);
 w[K]={version:"v40",label:label}}(window,document)}catch(t){console.warn("ari sig",t)}
+/* v3.119 Ari on/off words (Zion Nov 15 2026): HighLevel's per-client AI box says "bot"; say "Ari". Text only, no clicks, no settings. */
+!function(w,d){try{if(w.__ariOnOff)return;w.__ariOnOff=1;var t=0;
+function say(n,v){if(n&&n.nodeType===3&&n.textContent!==v)n.textContent=v}
+function txt(e){if(!e)return null;for(var i=0;i<e.childNodes.length;i++){var n=e.childNodes[i];if(n.nodeType===3&&n.textContent.trim())return n}return null}
+function fix(){t=0;try{
+var a=txt(d.querySelector("#ai-bot-tooltip .hr-tooltip__content span")||d.querySelector("#ai-bot-tooltip .hr-tooltip__content"));
+if(a){var m=/^\s*AI Bot \(([^)]*)\)\s*$/.exec(a.textContent);if(m){var s=m[1].toLowerCase();say(a,s==="active"?"Ari is on":s==="inactive"?"Ari is off":"Ari ("+m[1]+")")}}
+var b=txt(d.querySelector("#ai-bot-popover span.flex.items-center.gap-2.text-sm"));
+if(b){var x=b.textContent;if(/^\s*The bot is active\b/i.test(x))say(b,"Ari is answering this client.");else if(/^\s*The bot\b/.test(x))say(b,x.replace(/^\s*The bot\b/,"Ari"))}
+}catch(e){}}
+function kick(){if(!t)t=w.setTimeout(fix,120)}
+function go(){if(!d.body)return w.setTimeout(go,300);new MutationObserver(kick).observe(d.body,{childList:true,subtree:true,characterData:true});kick()}
+go()}catch(e){}}(window,document);
