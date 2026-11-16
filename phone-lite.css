@@ -87,3 +87,6 @@ body[data-arl-chat] #ari-lite-bar{margin-left:auto;padding:4px 2px}
 #ai-bot-popover span.font-semibold.text-lg{font-size:0!important}
 #ai-bot-popover span.font-semibold.text-lg::after{content:"Ari for this client";font-size:18px}
 #ai-bot-popover span.ml-1.text-gray-400.cursor-pointer,#ai-bot-popover div.text-sm.text-gray-500.mb-3{display:none!important}
+
+/* v3.120 (Zion Nov 16 2026): phone Ari Chats hides HighLevel's "Filter messages" menu in the green chat bar (computers already hide it). Display only. */
+#chat-filter{display:none!important}
