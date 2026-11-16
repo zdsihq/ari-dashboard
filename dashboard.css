@@ -586,3 +586,8 @@ html[data-ari-no-crm-ai=v1][data-ari-msg-luxe=v2] body[data-ari-shell=v1][data-a
 /* v3.119 phone Ari Chats: the email typing box is broken on phones (Zion Nov 15 2026): hide it there and point her to Ask Ari. */
 html[data-ari-noz]:is(#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z,html) body #conversations-central-panel-viewer div:has(>:is(#composer-deferred-footer,#composer-textarea) #conv-provider-select-trigger[aria-label*="current: Email"])>*{display:none!important}
 html[data-ari-noz]:is(#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z,html) body #conversations-central-panel-viewer div:has(>:is(#composer-deferred-footer,#composer-textarea) #conv-provider-select-trigger[aria-label*="current: Email"])::after{content:"To email this client, ask Ari on your Ask Ari page.";display:block;padding:14px 16px;text-align:center;font:500 14px/1.4 Jost,system-ui,sans-serif;color:#5B6660}
+
+/* v3.120 (Zion Nov 16 2026): phones hide HighLevel's "Filter messages" menu in the green chat bar (computers already do). */
+html[data-ari-noz] #chat-filter{display:none!important}
+/* v3.120 (Zion Nov 16 2026): email subject line in Ari Chats was painted ivory by the green-bar name rule (.truncate), unreadable on white. Dark green again. */
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body #conv-mail-thread-header :is(.truncate,span,svg){color:#123f29!important;-webkit-text-fill-color:#123f29!important}
