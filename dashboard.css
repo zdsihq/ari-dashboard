@@ -591,3 +591,6 @@ html[data-ari-noz]:is(#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z#z
 html[data-ari-noz] #chat-filter{display:none!important}
 /* v3.120 (Zion Nov 16 2026): email subject line in Ari Chats was painted ivory by the green-bar name rule (.truncate), unreadable on white. Dark green again. */
 html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body #conv-mail-thread-header :is(.truncate,span,svg){color:#123f29!important;-webkit-text-fill-color:#123f29!important}
+
+/* v3.120b: the green bar rule forces every .flex child to show on phones; outrank it so the Filter messages menu stays hidden. */
+html:is(#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u#u,html) body #chat-filter{display:none!important}
